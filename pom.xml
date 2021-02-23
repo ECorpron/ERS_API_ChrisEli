@@ -48,7 +48,15 @@
             <version>${log4j.version}</version>
         </dependency>
 
-            <!-- Not sure if needed -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.28.Final</version>
+        </dependency>
+
+
+        <!-- Not sure if needed -->
 <!--        <dependency>-->
 <!--            <groupId>org.simplejavamail</groupId>-->
 <!--            <artifactId>simple-java-mail</artifactId>-->
