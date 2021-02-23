@@ -5,12 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.revature</groupId>
-    <artifactId>troy_davis_p1</artifactId>
+    <artifactId>eli_chris_p1-5</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <jackson.version>2.10.1</jackson.version>
+        <log4j.version>2.14.0</log4j.version>
     </properties>
 
     <dependencies>
@@ -27,13 +30,50 @@
             <version>4.0.1</version>
         </dependency>
 
-        <!-- TODO update Jackson version -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.0</version>
+            <version>${jackson.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+            <!-- Not sure if needed -->
+<!--        <dependency>-->
+<!--            <groupId>org.simplejavamail</groupId>-->
+<!--            <artifactId>simple-java-mail</artifactId>-->
+<!--            <version>6.5.0</version>-->
+<!--        </dependency>-->
+
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <url>http://localhost:8080/manager/text</url>
+                        <server>LocalTomcat</server>
+                        <path>/ERS</path>
+                        <update>true</update>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 
 </project>
