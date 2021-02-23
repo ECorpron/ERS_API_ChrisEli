@@ -3,6 +3,7 @@ package com.revature.services;
 import com.revature.dtos.RbDTO;
 import com.revature.models.Reimbursement;
 import com.revature.repositories.ReimbursementsRepository;
+import com.revature.util.HibernateUtil;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ReimbursementService {
      */
     public List<RbDTO> getAllReimb(){
         List<RbDTO> reimbursements = reimbRepo.getAllReimbursements();
+
         if (reimbursements.isEmpty()){
             throw new RuntimeException();
         }

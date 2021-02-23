@@ -5,13 +5,12 @@ import com.revature.models.Reimbursement;
 import com.revature.models.ReimbursementStatus;
 import com.revature.models.ReimbursementType;
 import com.revature.util.ConnectionFactory;
+import com.revature.util.HibernateUtil;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -28,6 +27,13 @@ public class ReimbursementsRepository {
             "on er.author_id = author.id\n" +
             "left join project_1.ers_users resolver \n" +
             "on er.resolver_id = resolver.id ";
+
+    private String queryString = "FROM ERS_REIMBURSEMENTS er\n" +
+            "left join ERS_USERS author \n" +
+            "on er.author_id = author.id\n" +
+            "left join ERS_USERS resolver \n" +
+            "on er.resolver_id = resolver.id ";
+
     private String baseInsert = "INSERT INTO project_1.ers_reimbursements ";
     private String baseUpdate = "UPDATE project_1.ers_reimbursements er ";
 
@@ -37,7 +43,7 @@ public class ReimbursementsRepository {
 
     //---------------------------------- CREATE -------------------------------------------- //
     /**
-     * Adds a reimburement to the database, Does not handle Images!
+     * Adds a reimbursement to the database, Does not handle Images!
      * @param reimbursement the reimbursement to be added to the DB
      * @throws SQLException e
      * @throws IOException e
@@ -67,6 +73,13 @@ public class ReimbursementsRepository {
     //---------------------------------- READ -------------------------------------------- //
 
     public List<RbDTO> getAllReimbursements() {
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query<Object[]> query = session.createQuery(queryString);
+
+        List<Object[]> list = query.list();
+        //list.get(0);
+
         List<RbDTO> reimbursements = new ArrayList<>();
         try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
             String sql = baseQuery + " order by er.id";
@@ -428,6 +441,26 @@ public class ReimbursementsRepository {
             reimbursements.add(temp);
         }
         return reimbursements;
+    }
+
+    private List<RbDTO> mapResultListToDTO(List<Object[]> reimbursements) throws SQLException {
+        // So I suspect that Object[0] = Reimbursement, Object[1] = Author, Object[2] = Resolver.
+
+
+        List<RbDTO> reimbs = new ArrayList<>();
+
+//        for (Reimbursement rb: reimbursements) {
+//            RbDTO temp = new RbDTO();
+//            temp.setId(rb.getId());
+//            temp.setAmount(rb.getAmount());
+//            temp.setSubmitted(rb.getSubmitted().toString().substring(0,19));
+//            temp.setDescription(rb.getDescription());
+//            temp.setAuthorName(rb.);
+//            temp.setStatus();
+//            temp.setType();
+//        }
+
+        return null;
     }
 
     private List<RbDTO> mapResultSetDTO(ResultSet rs) throws SQLException {
