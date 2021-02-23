@@ -1,5 +1,6 @@
 package com.revature.models;
 
+import javax.persistence.*;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -7,16 +8,42 @@ import java.util.Objects;
 /**
  * The base unit of the ERS system. ready to include images
  */
+@Entity
+@Table(name = "ERS_REIMBURSEMENTS")
 public class Reimbursement {
+    @Id @GeneratedValue
+    @Column(name = "REIMB_ID")
     private Integer id;
+
+    @Column(name = "AMOUNT", nullable = false)
     private Double amount;
+
+    @Column(name = "SUBMITTED", nullable = false)
     private Timestamp submitted;
+
+    @Column(name = "RESOLVED", nullable = false)
     private Timestamp resolved;
+
+    @Column(name = "DESCRIPTION", nullable = false)
     private String description;
+
+    @Column(name = "RECEIPT", nullable = false)
     private File receipt;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ERS_USER_ID")
     private int authorId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "ERS_USER_ID")
     private int resolverId;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "REIMB_STATUS_ID")
     private ReimbursementStatus reimbursementStatus;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "REIMB_TYPE_ID")
     private ReimbursementType reimbursementType;
 
     public Reimbursement() {

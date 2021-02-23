@@ -1,5 +1,7 @@
 package com.revature.dtos;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Objects;
 
 /**
@@ -18,6 +20,7 @@ public class ApproveDeny {
         this.id = id;
     }
 
+    @Enumerated(EnumType.ORDINAL)
     public Integer getStatus() {
         return status;
     }
