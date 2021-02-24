@@ -31,8 +31,7 @@ public class ReimbursementsRepository {
     private String queryString = "FROM ERS_REIMBURSEMENTS er\n" +
             "left join ERS_USERS author \n" +
             "on er.author_id = author.id\n" +
-            "left join ERS_USERS resolver \n" +
-            "on er.resolver_id = resolver.id ";
+            "AND er.resolver_id = resolver.id ";
 
     private String baseInsert = "INSERT INTO project_1.ers_reimbursements ";
     private String baseUpdate = "UPDATE project_1.ers_reimbursements er ";
@@ -75,23 +74,25 @@ public class ReimbursementsRepository {
     public List<RbDTO> getAllReimbursements() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Query<Object[]> query = session.createQuery(queryString);
+        session.beginTransaction();
 
-        List<Object[]> list = query.list();
-        //list.get(0);
+        //object[0] == reimbursement and object[1] == author
+        List<Object[]> list = session.createQuery(queryString).list();
 
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + " order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
 
-            ResultSet rs = ps.executeQuery();
-
-            reimbursements = mapResultSetDTO(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return reimbursements;
+            List<RbDTO> reimbursements = mapResultListToDTO(list);
+            return reimbursements;
+//        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
+//            String sql = baseQuery + " order by er.id";
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//
+//            ResultSet rs = ps.executeQuery();
+//
+//            reimbursements = mapResultSetDTO(rs);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return reimbursements;
     }
 
     public List<RbDTO> getAllReimbSetByStatus(Integer statusId) {
@@ -443,11 +444,15 @@ public class ReimbursementsRepository {
         return reimbursements;
     }
 
-    private List<RbDTO> mapResultListToDTO(List<Object[]> reimbursements) throws SQLException {
+    private List<RbDTO> mapResultListToDTO(List<Object[]> reimbursements) {
         // So I suspect that Object[0] = Reimbursement, Object[1] = Author, Object[2] = Resolver.
-
-
         List<RbDTO> reimbs = new ArrayList<>();
+        for(Object[] objs: reimbursements) {
+            System.out.println("object 0");
+            System.out.println(objs[0].toString());
+            System.out.println("object 1");
+            System.out.println(objs[1].toString());
+        }
 
 //        for (Reimbursement rb: reimbursements) {
 //            RbDTO temp = new RbDTO();
