@@ -77,7 +77,8 @@ public class ReimbursementsRepository {
         session.beginTransaction();
 
         //object[0] == reimbursement and object[1] == author
-        List<Object[]> list = session.createQuery(queryString).list();
+//        List<Object[]> list = session.createQuery(queryString).list();
+        List<Reimbursement> list = session.createQuery("FROM Reimbursement").list();
 
 
             List<RbDTO> reimbursements = mapResultListToDTO(list);
@@ -444,14 +445,12 @@ public class ReimbursementsRepository {
         return reimbursements;
     }
 
-    private List<RbDTO> mapResultListToDTO(List<Object[]> reimbursements) {
+    private List<RbDTO> mapResultListToDTO(List<Reimbursement> reimbursements) {
         // So I suspect that Object[0] = Reimbursement, Object[1] = Author, Object[2] = Resolver.
         List<RbDTO> reimbs = new ArrayList<>();
-        for(Object[] objs: reimbursements) {
+        for(Reimbursement objs: reimbursements) {
             System.out.println("object 0");
-            System.out.println(objs[0].toString());
-            System.out.println("object 1");
-            System.out.println(objs[1].toString());
+            System.out.println(objs.toString());
         }
 
 //        for (Reimbursement rb: reimbursements) {

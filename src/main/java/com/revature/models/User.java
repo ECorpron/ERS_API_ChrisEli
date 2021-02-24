@@ -12,7 +12,7 @@ import java.util.Objects;
 public class User {
 
     @Id @GeneratedValue
-    @Column(name = "ERS_USER_ID")
+    @Column(name = "id")
     private int userId;
 
     @Column(name = "USERNAME", unique = true, nullable = false)
@@ -32,7 +32,7 @@ public class User {
 
     //@ManyToOne(optional = false)
     //@JoinColumn(name = "ROLE_ID")
-    @Column(name = "ROLE_ID")
+    @Column(name = "user_ROLE_ID")
     private Integer userRole;
     public User() {
         super();

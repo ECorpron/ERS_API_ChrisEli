@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class ConnectionFactory {
     private Properties props = new Properties();
-    private static ConnectionFactory connFactory = new ConnectionFactory();
+    //private static ConnectionFactory connFactory = new ConnectionFactory();
 
     private ConnectionFactory(){
         try {
@@ -38,7 +38,7 @@ public class ConnectionFactory {
      * @return returns and instance of thte connection
      */
     public static ConnectionFactory getInstance(){
-        return connFactory;
+        return null;
     }
 
     /**
@@ -47,18 +47,18 @@ public class ConnectionFactory {
      */
     public Connection getConnection(){
         Connection conn = null;
-        try {
-            // Force the JVM to load the PostGreSQL JDBC driver
-            Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection(props.getProperty("url"),
-                    props.getProperty("username"),
-                    props.getProperty("password"));
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
-        if (conn == null) {
-            throw new RuntimeException("Failed to establish connection.");
-        }
+//        try {
+//            // Force the JVM to load the PostGreSQL JDBC driver
+//            Class.forName("org.postgresql.Driver");
+//            conn = DriverManager.getConnection(props.getProperty("url"),
+//                    props.getProperty("username"),
+//                    props.getProperty("password"));
+//        } catch (ClassNotFoundException | SQLException e) {
+//            e.printStackTrace();
+//        }
+//        if (conn == null) {
+//            throw new RuntimeException("Failed to establish connection.");
+//        }
         return conn;
     }
 

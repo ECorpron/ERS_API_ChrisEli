@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Reimbursement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "REIMB_ID")
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "AMOUNT", nullable = false)
@@ -31,22 +31,22 @@ public class Reimbursement {
     @Column(name = "RECEIPT", nullable = false)
     private File receipt;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "AUTHOR_ID")
+    @ManyToOne(targetEntity = User.class,optional = false)
+    @JoinColumn(name = "ID")
     private int authorId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "RESOLVER_ID")
+    @ManyToOne(targetEntity = User.class, optional = false)
+    @JoinColumn(name = "ID")
     private int resolverId;
 
    //@ManyToOne(optional = false)
     //@JoinColumn(name = "REIMB_STATUS_ID")
-    @Column(name = "REIMB_STATUS_ID")
+    @Column(name = "reimbursement_status_id")
     private ReimbursementStatus reimbursementStatus;
 
     //@ManyToOne(optional = false)
     //@JoinColumn(name = "REIMB_TYPE_ID")
-    @Column(name = "REIMB_TYPE_ID")
+    @Column(name = "reimbursement_type_id")
     private ReimbursementType reimbursementType;
 
     public Reimbursement() {
