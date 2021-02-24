@@ -22,22 +22,22 @@ public class Reimbursement {
     @Column(name = "SUBMITTED", nullable = false)
     private Timestamp submitted;
 
-    @Column(name = "RESOLVED", nullable = false)
+    @Column(name = "RESOLVED")
     private Timestamp resolved;
 
-    @Column(name = "DESCRIPTION", nullable = false)
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Column(name = "RECEIPT", nullable = false)
     private File receipt;
 
     @ManyToOne(targetEntity = User.class,optional = false)
-    @JoinColumn(name = "ID")
-    private int authorId;
+    @JoinColumn(name = "author_id")
+    private User author;
 
-    @ManyToOne(targetEntity = User.class, optional = false)
-    @JoinColumn(name = "ID")
-    private int resolverId;
+    @ManyToOne(targetEntity = User.class)
+    @JoinColumn(name = "resolver_id", insertable = false, updatable = false)
+    private User resolver;
 
    //@ManyToOne(optional = false)
     //@JoinColumn(name = "REIMB_STATUS_ID")
@@ -53,35 +53,35 @@ public class Reimbursement {
         super();
     }
 
-    public Reimbursement(Double amount, String description, int authorId,
+    public Reimbursement(Double amount, String description, User author,
                          ReimbursementStatus reimbursementStatus, ReimbursementType reimbursementType) {
         this.amount = amount;
         this.description = description;
-        this.authorId = authorId;
+        this.author = author;
         this.reimbursementStatus = reimbursementStatus;
         this.reimbursementType = reimbursementType;
     }
 
-    public Reimbursement(Integer id, Double amount, String description, int authorId,
+    public Reimbursement(Integer id, Double amount, String description, User author,
                          ReimbursementStatus reimbursementStatus, ReimbursementType reimbursementType) {
         this.id = id;
         this.amount = amount;
         this.description = description;
-        this.authorId = authorId;
+        this.author = author;
         this.reimbursementStatus = reimbursementStatus;
         this.reimbursementType = reimbursementType;
     }
 
     public Reimbursement(Integer id, Double amount, Timestamp submitted,
-                         Timestamp resolved, String description, int authorId, int resolverId,
+                         Timestamp resolved, String description, User author, User resolver,
                          ReimbursementStatus reimbursementStatus, ReimbursementType reimbursementType) {
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
         this.resolved = resolved;
         this.description = description;
-        this.authorId = authorId;
-        this.resolverId = resolverId;
+        this.author = author;
+        this.resolver = resolver;
         this.reimbursementStatus = reimbursementStatus;
         this.reimbursementType = reimbursementType;
     }
@@ -134,20 +134,20 @@ public class Reimbursement {
         this.description = description;
     }
 
-    public int getAuthorId() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
-    public int getResolverId() {
-        return resolverId;
+    public User getResolver() {
+        return resolver;
     }
 
-    public void setResolverId(int resolverId) {
-        this.resolverId = resolverId;
+    public void setResolver(User resolver) {
+        this.resolver = resolver;
     }
 
     public ReimbursementStatus getReimbursementStatus() {
@@ -171,8 +171,8 @@ public class Reimbursement {
         if (this == o) return true;
         if (!(o instanceof Reimbursement)) return false;
         Reimbursement that = (Reimbursement) o;
-        return authorId == that.authorId &&
-                resolverId == that.resolverId &&
+        return author == that.author &&
+                resolver == that.resolver &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(amount, that.amount) &&
                 Objects.equals(submitted, that.submitted) &&
@@ -184,7 +184,7 @@ public class Reimbursement {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, amount, submitted, resolved, description, authorId, resolverId, reimbursementStatus, reimbursementType);
+        return Objects.hash(id, amount, submitted, resolved, description, author, resolver, reimbursementStatus, reimbursementType);
     }
 
     @Override
@@ -195,8 +195,8 @@ public class Reimbursement {
                 ", submitted=" + submitted +
                 ", resolved=" + resolved +
                 ", description='" + description + '\'' +
-                ", authorId=" + authorId +
-                ", resolverId=" + resolverId +
+                ", authorId=" + author +
+                ", resolverId=" + resolver +
                 ", reimbursementStatus=" + reimbursementStatus +
                 ", reimbursementType=" + reimbursementType +
                 '}';

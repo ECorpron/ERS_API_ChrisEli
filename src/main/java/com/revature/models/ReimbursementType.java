@@ -4,11 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table(name="ERS_REIMBURSEMENT_TYPES")
+//@Entity
+//@Table(name="ERS_REIMBURSEMENT_TYPES")
 public enum ReimbursementType {
     // values declared within enums are constants and are comma separated
-    @Column(name = "REIMB_TYPE", nullable = false, unique = true)
+    //@Column(name = "REIMB_TYPE", nullable = false, unique = true)
     LODGING("Lodging"),
     TRAVEL("Travel"),
     FOOD("Food"),

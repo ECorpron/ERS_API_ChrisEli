@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "ERS_USERS")
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int userId;
 

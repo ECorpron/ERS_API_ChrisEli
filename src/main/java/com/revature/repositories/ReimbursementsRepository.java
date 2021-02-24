@@ -49,64 +49,56 @@ public class ReimbursementsRepository {
      */
     // TODO add support to persist receipt images to data source
     public boolean addReimbursement(Reimbursement reimbursement) {
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseInsert +
-                    "(amount, description, author_id, " +
-                    "reimbursement_status_id, reimbursement_type_id)\n" +
-                    "VALUES(?, ?, ?, 1, ?);\n";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setDouble(1,reimbursement.getAmount());
-            ps.setString(2,reimbursement.getDescription());
-            ps.setInt(3,reimbursement.getAuthorId());
-            //Reimbursements are submitted with PENDING  status by Default!
-            ps.setInt(4,reimbursement.getReimbursementType().ordinal() + 1);
-            //get the number of affected rows
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted != 0;
-        } catch (SQLException e) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        try {
+            session.save(reimbursement);
+        } catch (Exception e){
+            session.getTransaction().rollback();
+            session.close();
             e.printStackTrace();
+            return false;
         }
-        return false;
+
+        session.getTransaction().commit();
+        session.close();
+
+        return true;
     }
 
     //---------------------------------- READ -------------------------------------------- //
 
+    @SuppressWarnings("unchecked")
     public List<RbDTO> getAllReimbursements() {
 
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        //object[0] == reimbursement and object[1] == author
-//        List<Object[]> list = session.createQuery(queryString).list();
         List<Reimbursement> list = session.createQuery("FROM Reimbursement").list();
+        List<RbDTO> reimbursements = mapResultListToDTO(list);
 
+        session.getTransaction().commit();
+        session.close();
 
-            List<RbDTO> reimbursements = mapResultListToDTO(list);
-            return reimbursements;
-//        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-//            String sql = baseQuery + " order by er.id";
-//            PreparedStatement ps = conn.prepareStatement(sql);
-//
-//            ResultSet rs = ps.executeQuery();
-//
-//            reimbursements = mapResultSetDTO(rs);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return reimbursements;
+        return reimbursements;
     }
 
     public List<RbDTO> getAllReimbSetByStatus(Integer statusId) {
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.reimbursement_status_id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1,statusId);
-            ResultSet rs = ps.executeQuery();
-            reimbursements = mapResultSetDTO(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        //List<RbDTO> reimbursements = new ArrayList<>();
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        String hql = "FROM Reimbursement where reimbursement_status_id = "+statusId;
+        Query query = session.createQuery(hql);
+
+        List<Reimbursement> list = query.list();
+        List<RbDTO> reimbursements = mapResultListToDTO(list);
+
+        session.getTransaction().commit();
+        session.close();
+
         return reimbursements;
     }
 
@@ -435,8 +427,8 @@ public class ReimbursementsRepository {
             temp.setSubmitted(rs.getTimestamp("submitted"));
             temp.setResolved(rs.getTimestamp("resolved"));
             temp.setDescription(rs.getString("description"));
-            temp.setAuthorId(rs.getInt("author_id"));
-            temp.setResolverId(rs.getInt("resolver_id"));
+            //temp.setAuthor(rs.getObject("author"));
+            //temp.setResolver(rs.getInt("resolver_id"));
             temp.setReimbursementStatus(ReimbursementStatus.getByNumber(rs.getInt("reimbursement_status_id")));
             temp.setReimbursementType(ReimbursementType.getByNumber(rs.getInt("reimbursement_type_id")));
 
@@ -449,22 +441,19 @@ public class ReimbursementsRepository {
         // So I suspect that Object[0] = Reimbursement, Object[1] = Author, Object[2] = Resolver.
         List<RbDTO> reimbs = new ArrayList<>();
         for(Reimbursement objs: reimbursements) {
-            System.out.println("object 0");
-            System.out.println(objs.toString());
+            RbDTO rbDTO = new RbDTO();
+            rbDTO.setId(objs.getId());
+            rbDTO.setAmount(objs.getAmount());
+            rbDTO.setSubmitted(objs.getSubmitted().toString().substring(0,19));
+            rbDTO.setDescription(objs.getDescription());
+            rbDTO.setAuthorName(objs.getAuthor().getFirstname()+" "+objs.getAuthor().getLastname());
+            rbDTO.setStatus(objs.getReimbursementStatus().toString());
+            rbDTO.setType(objs.getReimbursementStatus().toString());
+
+            reimbs.add(rbDTO);
         }
 
-//        for (Reimbursement rb: reimbursements) {
-//            RbDTO temp = new RbDTO();
-//            temp.setId(rb.getId());
-//            temp.setAmount(rb.getAmount());
-//            temp.setSubmitted(rb.getSubmitted().toString().substring(0,19));
-//            temp.setDescription(rb.getDescription());
-//            temp.setAuthorName(rb.);
-//            temp.setStatus();
-//            temp.setType();
-//        }
-
-        return null;
+        return reimbs;
     }
 
     private List<RbDTO> mapResultSetDTO(ResultSet rs) throws SQLException {

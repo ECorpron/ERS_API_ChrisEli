@@ -3,7 +3,6 @@ package com.revature.services;
 import com.revature.dtos.RbDTO;
 import com.revature.models.Reimbursement;
 import com.revature.repositories.ReimbursementsRepository;
-import com.revature.util.HibernateUtil;
 
 import java.util.List;
 
@@ -139,7 +138,7 @@ public class ReimbursementService {
         if (reimb == null) return false;
         if (reimb.getAmount() == null || reimb.getAmount() <= 0 ) return false;
         if (reimb.getDescription() == null || reimb.getDescription().trim().equals("")) return false;
-        if (reimb.getAuthorId() <= 0 ) return false;
+        if (reimb.getAuthor() != null ) return false;
         if (reimb.getReimbursementType() == null ) return false;
         return true;
     }
