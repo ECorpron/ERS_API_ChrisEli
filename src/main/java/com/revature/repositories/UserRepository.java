@@ -2,6 +2,8 @@ package com.revature.repositories;
 
 import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
+import com.revature.util.HibernateUtil;
+import org.hibernate.Session;
 
 import java.sql.*;
 import java.util.*;
@@ -24,24 +26,21 @@ public class UserRepository {
      * @throws SQLException e
      */
     public boolean addUser(User newUser)  {
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseInsert +
-                         "(username, password, first_name, last_name, email, user_role_id)\n" +
-                         "VALUES(?, project_1.crypt(?, project_1.gen_salt('bf', 10)), ?, ?, ?, ?);\n";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,newUser.getUsername());
-            ps.setString(2,newUser.getPassword());
-            ps.setString(3,newUser.getFirstname());
-            ps.setString(4,newUser.getLastname());
-            ps.setString(5,newUser.getEmail());
-            ps.setInt(6,newUser.getUserRole());
-            //get the number of affected rows
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted != 0;
-        } catch (SQLException e) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        try {
+            session.save(newUser);
+        } catch (Exception e){
+            session.getTransaction().rollback();
+            session.close();
             e.printStackTrace();
+            return false;
         }
-        return false;
+
+        session.getTransaction().commit();
+        session.close();
+        return true;
     }
 
     //---------------------------------- READ -------------------------------------------- //

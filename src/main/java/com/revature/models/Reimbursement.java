@@ -1,5 +1,7 @@
 package com.revature.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.io.File;
 import java.sql.Timestamp;
@@ -28,8 +30,9 @@ public class Reimbursement {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name = "RECEIPT", nullable = false)
-    private File receipt;
+    @Type(type="org.hibernate.type.BinaryType")
+    @Column(name = "receipt", columnDefinition = "bytea")
+    private byte[] receipt;
 
     @ManyToOne(targetEntity = User.class,optional = false)
     @JoinColumn(name = "author_id")
@@ -86,11 +89,11 @@ public class Reimbursement {
         this.reimbursementType = reimbursementType;
     }
 
-    public File getReceipt() {
+    public byte[] getReceipt() {
         return receipt;
     }
 
-    public void setReceipt(File receipt) {
+    public void setReceipt(byte[] receipt) {
         this.receipt = receipt;
     }
 

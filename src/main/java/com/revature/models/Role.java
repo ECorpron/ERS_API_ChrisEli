@@ -9,6 +9,7 @@ import javax.persistence.Table;
 public enum Role {
 
     //@Column(name = "ROLE_NAME", nullable = false, unique = true)
+    DEFAULT("Default"),
     ADMIN("Admin"),
     FINANCE_MANAGER("Finance Manager"),
     EMPLOYEE("Employee"),
