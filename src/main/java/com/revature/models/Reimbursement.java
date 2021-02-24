@@ -11,7 +11,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "ERS_REIMBURSEMENTS")
 public class Reimbursement {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "REIMB_ID")
     private Integer id;
 
@@ -31,19 +32,21 @@ public class Reimbursement {
     private File receipt;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ERS_USER_ID")
+    @JoinColumn(name = "AUTHOR_ID")
     private int authorId;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ERS_USER_ID")
+    @JoinColumn(name = "RESOLVER_ID")
     private int resolverId;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "REIMB_STATUS_ID")
+   //@ManyToOne(optional = false)
+    //@JoinColumn(name = "REIMB_STATUS_ID")
+    @Column(name = "REIMB_STATUS_ID")
     private ReimbursementStatus reimbursementStatus;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "REIMB_TYPE_ID")
+    //@ManyToOne(optional = false)
+    //@JoinColumn(name = "REIMB_TYPE_ID")
+    @Column(name = "REIMB_TYPE_ID")
     private ReimbursementType reimbursementType;
 
     public Reimbursement() {

@@ -30,8 +30,9 @@ public class User {
     @Column(name = "EMAIL", nullable = false, unique = true)
     private String email;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "ROLE_ID")
+    //@ManyToOne(optional = false)
+    //@JoinColumn(name = "ROLE_ID")
+    @Column(name = "ROLE_ID")
     private Integer userRole;
     public User() {
         super();
