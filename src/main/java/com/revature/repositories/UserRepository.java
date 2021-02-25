@@ -1,5 +1,7 @@
 package com.revature.repositories;
 
+import com.revature.dtos.RbDTO;
+import com.revature.models.Reimbursement;
 import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 import com.revature.util.HibernateUtil;
@@ -66,32 +68,33 @@ public class UserRepository {
      * @throws SQLException e
      */
     public Optional<User> getAUserByEmail(String email) {
-        Optional<User> user = Optional.empty();
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()){
-            String sql = baseQuery + "WHERE email =? ";
-            PreparedStatement psmt = conn.prepareStatement(sql);
-            psmt.setString(1,email);
-            ResultSet rs = psmt.executeQuery();
-            user = mapResultSet(rs).stream().findFirst();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        String hql = "FROM User where email = "+email;
+        Query<User> query = session.createQuery(hql);
+
+        List<User> list = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return Optional.of(list.get(0));
     }
 
     public Optional<User> getAUserByUsername(String userName) {
-        Optional<User> user = Optional.empty();
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()){
-            String sql = baseQuery + "WHERE username = ?";
-            PreparedStatement psmt = conn.prepareStatement(sql);
-            psmt.setString(1,userName);
-            ResultSet rs = psmt.executeQuery();
-            user = mapResultSet(rs).stream().findFirst();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-        System.out.println(user);
-        return user;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        String hql = "FROM User where username = "+userName;
+        Query<User> query = session.createQuery(hql);
+
+        List<User> list = query.list();
+
+        session.getTransaction().commit();
+        session.close();
+
+        return Optional.of(list.get(0));
     }
 
     /**
@@ -128,24 +131,22 @@ public class UserRepository {
     //---------------------------------- UPDATE -------------------------------------------- //
 
     public boolean updateAUser(User newUser) {
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseUpdate +
-                    "SET first_name=?, last_name=?, email=?, user_role_id=?, username=?, password= project_1.crypt(?, project_1.gen_salt('bf', 10))\n" +
-                    "WHERE id=?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1,newUser.getFirstname());
-            ps.setString(2,newUser.getLastname());
-            ps.setString(3,newUser.getEmail());
-            ps.setInt(4,newUser.getUserRole());
-            ps.setString(5,newUser.getUsername());
-            ps.setString(6, newUser.getPassword());
-            ps.setInt(7,newUser.getUserId());
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted != 0;
-        } catch (SQLException e) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        try {
+            //session.evict(newUser)?
+            session.merge(newUser);
+        } catch (Exception e){
+            session.getTransaction().rollback();
+            session.close();
             e.printStackTrace();
+            return false;
         }
-        return false;
+
+        session.getTransaction().commit();
+        session.close();
+        return true;
     }
 
     //---------------------------------- DELETE -------------------------------------------- //
@@ -157,19 +158,23 @@ public class UserRepository {
      * @throws SQLException
      */
     public boolean deleteAUserById(Integer userId) {
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseUpdate +
-                         "SET user_role_id=4\n" +
-                         "WHERE id=? ";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, userId);
-            //get the number of affected rows
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted != 0;
-        } catch (SQLException e) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        try {
+            //session.evict(newUser)?
+            User delete = session.find(User.class, userId);
+            session.remove(delete);
+        } catch (Exception e){
+            session.getTransaction().rollback();
+            session.close();
             e.printStackTrace();
+            return false;
         }
-        return false;
+
+        session.getTransaction().commit();
+        session.close();
+        return true;
     }
 
 

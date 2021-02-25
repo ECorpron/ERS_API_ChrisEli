@@ -35,6 +35,7 @@ public class AuthenticationServlet extends HttpServlet {
             writer.write(mapper.writeValueAsString(authUser));
 
             req.getSession().setAttribute("this-user", authUser);
+            resp.setStatus(200);
 
         } catch (MismatchedInputException e) {
             e.printStackTrace();
