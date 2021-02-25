@@ -1,0 +1,36 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+
+<!--        <property name="show_sql">true</property>-->
+
+        <property name = "hibernate.dialect">
+            org.hibernate.dialect.PostgreSQL82Dialect
+        </property>
+
+        <property name = "hibernate.connection.driver_class">
+            org.postgresql.Driver
+        </property>
+
+        <!-- Assume test is the database name -->
+
+        <property name = "hibernate.connection.url">
+            jdbc:postgresql://java-enterprise210119.cxutdmhfiik1.us-west-2.rds.amazonaws.com:5432/EliChris1_5
+        </property>
+
+        <property name = "hibernate.connection.username">
+            postgres
+        </property>
+
+        <property name = "hibernate.connection.password">
+            9RVI0G1B7DEkbx83vlIY
+        </property>
+
+        <!-- List of XML mapping files -->
+        <mapping class="com.revature.models.Reimbursement"/>
+        <mapping class="com.revature.models.User"/>
+
+    </session-factory>
+</hibernate-configuration>
