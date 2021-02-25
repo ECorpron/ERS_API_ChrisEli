@@ -1,8 +1,10 @@
 package com.revature.models;
 
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.File;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -11,6 +13,7 @@ import java.util.Objects;
  * The base unit of the ERS system. ready to include images
  */
 @Entity
+@DynamicInsert
 @Table(name = "ERS_REIMBURSEMENTS")
 public class Reimbursement {
     @Id
@@ -22,6 +25,8 @@ public class Reimbursement {
     private Double amount;
 
     @Column(name = "SUBMITTED", nullable = false)
+    @Generated(value = GenerationTime.INSERT)
+    @ColumnDefault(value = "CURRENT_TIMESTAMP")
     private Timestamp submitted;
 
     @Column(name = "RESOLVED")

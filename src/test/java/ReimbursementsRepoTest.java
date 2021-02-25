@@ -12,10 +12,10 @@ public class ReimbursementsRepoTest {
         UserRepository userRepo = new UserRepository();
 
         User user = new User();
-        user.setEmail("eliEmail@test.com");
+        user.setEmail("asdefnewEmail@test.com");
         user.setFirstname("test");
         user.setLastname("user");
-        user.setUsername("eli");
+        user.setUsername("asdnew");
         user.setPassword("password");
         user.setUserRole(Role.ADMIN.ordinal());
 
