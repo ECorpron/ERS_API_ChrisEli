@@ -4,6 +4,7 @@ import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 import com.revature.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import java.sql.*;
 import java.util.*;
@@ -100,20 +101,28 @@ public class UserRepository {
      * @return returns an optional user
      * @throws SQLException e
      */
+    @SuppressWarnings("unchecked")
     public Optional<User> getAUserByUsernameAndPassword(String userName, String password) {
-        Optional<User> user = Optional.empty();
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()){
-            String sql = baseQuery + "WHERE username = ? AND  password = project_1.crypt(?, password)";
-            PreparedStatement psmt = conn.prepareStatement(sql);
-            psmt.setString(1,userName);
-            psmt.setString(2,password);
-            ResultSet rs = psmt.executeQuery();
-            user = mapResultSet(rs).stream().findFirst();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+
+        try {
+            String hql = "FROM User WHERE username = :name AND password = :pass";
+            Query<User> query = session.createQuery(hql);
+            query.setParameter("name",userName);
+            query.setParameter("pass", password);
+            List<User> results = query.list();
+
+            session.getTransaction().commit();
+            session.close();
+            return Optional.of(results.get(0));
+
+        } catch (Exception e){
+            session.getTransaction().rollback();
+            session.close();
+            e.printStackTrace();
+            return Optional.empty();
         }
-        System.out.println(user);
-        return user;
     }
 
     //---------------------------------- UPDATE -------------------------------------------- //

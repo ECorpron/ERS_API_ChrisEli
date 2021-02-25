@@ -13,6 +13,12 @@ import java.util.Optional;
  */
 public class UserService {
     private UserRepository userRepo = new UserRepository();
+    private static UserService userService = new UserService();
+
+    public static UserService getInstance() {
+        return userService;
+    }
+
     /**
      * Gets all users from the DataBase
      * @return A list of Users
