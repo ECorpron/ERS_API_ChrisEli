@@ -91,8 +91,8 @@ public class UsersServlet extends HttpServlet {
                 return;
             }
 
-            int userId = mapper.readValue(req.getInputStream(),Integer.class);
-            if (userService.deleteUserById(userId)) {
+            User toDelete = mapper.readValue(req.getInputStream(),User.class);
+            if (userService.deleteUserById(toDelete.getUserId())) {
                 resp.setStatus(200);
             } else {
                 resp.setStatus(404);
