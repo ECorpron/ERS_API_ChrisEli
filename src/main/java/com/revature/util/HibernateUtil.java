@@ -23,18 +23,18 @@ public class HibernateUtil {
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "org.postgresql.Driver");
-                settings.put(Environment.URL, System.getenv("url"));
-                settings.put(Environment.USER, System.getenv("user"));
-                settings.put(Environment.PASS, System.getenv("password"));
+                settings.put(Environment.URL, System.getProperty("url"));
+                settings.put(Environment.USER, System.getProperty("user"));
+                settings.put(Environment.PASS, System.getProperty("password"));
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
 
-                System.out.println("+------------------------------------------------------");
-
-                System.out.println("The URL is: "+System.getenv("url"));
-                System.out.println("The Username is: "+System.getenv("user"));
-                System.out.println("The password is: "+System.getenv("password"));
-
-                System.out.println("+-------------------------------------------------------");
+//                System.out.println("+------------------------------------------------------");
+//
+//                System.out.println("The URL is: "+System.getenv("url"));
+//                System.out.println("The Username is: "+System.getenv("user"));
+//                System.out.println("The password is: "+System.getenv("password"));
+//
+//                System.out.println("+-------------------------------------------------------");
 
                 //settings.put(Environment.SHOW_SQL, "true");
 
