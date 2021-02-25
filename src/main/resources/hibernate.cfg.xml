@@ -17,15 +17,15 @@
         <!-- Assume test is the database name -->
 
         <property name = "hibernate.connection.url">
-            jdbc:postgresql://java-enterprise210119.cxutdmhfiik1.us-west-2.rds.amazonaws.com:5432/EliChris1_5
+            {url}
         </property>
 
         <property name = "hibernate.connection.username">
-            postgres
+            {username}
         </property>
 
         <property name = "hibernate.connection.password">
-            9RVI0G1B7DEkbx83vlIY
+            {password}
         </property>
 
         <!-- List of XML mapping files -->
