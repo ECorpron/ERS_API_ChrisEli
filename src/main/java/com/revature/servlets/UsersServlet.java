@@ -19,6 +19,7 @@ public class UsersServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
 
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 

@@ -10,7 +10,7 @@ public class RbDTO {
     private Double amount;
     private String submitted;
     private String resolved;
-    private Blob image;
+    private byte[] image;
     private String authorName;
     private String resolverName;
     private String status;
@@ -53,11 +53,11 @@ public class RbDTO {
         this.resolved = resolved;
     }
 
-    public Blob getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(Blob image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

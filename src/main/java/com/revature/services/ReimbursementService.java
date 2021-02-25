@@ -2,15 +2,31 @@ package com.revature.services;
 
 import com.revature.dtos.RbDTO;
 import com.revature.models.Reimbursement;
+import com.revature.models.ReimbursementStatus;
+import com.revature.models.ReimbursementType;
+import com.revature.models.User;
 import com.revature.repositories.ReimbursementsRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service layer for validating reimbursements before sending to or from the Database
  */
 public class ReimbursementService {
     private final ReimbursementsRepository reimbRepo = new ReimbursementsRepository();
+    private final static ReimbursementService reimbService = new ReimbursementService();
+
+
+
+    private ReimbursementService() {
+        super();
+    }
+
+
+    public static ReimbursementService getInstance() {
+        return reimbService;
+    }
 
     /**
      * Gets all Reimbursements from the DataBase
@@ -87,6 +103,17 @@ public class ReimbursementService {
         System.out.println(reimb);
     }
 
+    public void saveRbDTO(User user, RbDTO rbdto) {
+        Reimbursement reimbursement = new Reimbursement();
+        reimbursement.setAuthor(user);
+        reimbursement.setAmount(rbdto.getAmount());
+        reimbursement.setDescription(rbdto.getDescription());
+        reimbursement.setReceipt(rbdto.getImage());
+        reimbursement.setReimbursementType(ReimbursementType.valueOf(rbdto.getType()));
+        reimbursement.setReimbursementStatus(ReimbursementStatus.valueOf(rbdto.getStatus()));
+        save(reimbursement);
+    }
+
     /**
      * Update a reimbursement
      * @param reimb the completed reimbursement object
@@ -101,30 +128,47 @@ public class ReimbursementService {
         System.out.println(reimb);
     }
 
+    public void updateReimbursemntByRbDTO(RbDTO reimb) {
+        try {
+            Optional<Reimbursement> reimbursement = reimbRepo.getAReimbByReimbId(reimb.getId());
+            if(reimbursement.isPresent()) {
+                Reimbursement updated_reimb = reimbursement.get();
+                updated_reimb.setAmount(reimb.getAmount());
+                updated_reimb.setDescription(reimb.getDescription());
+                updated_reimb.setReimbursementType(ReimbursementType.valueOf(reimb.getType()));
+                updated_reimb.setReimbursementStatus(ReimbursementStatus.valueOf(reimb.getStatus()));
+                reimbRepo.updateEMP(updated_reimb);
+            }
+
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Approve a Reimb.
-     * @param resolverId the Id of the fin manager resolving the reimb.
+     * @param user the user of the fin manager resolving the reimb.
      * @param reimbId id of the Reimb. to approve or disapprove.
      */
-    public void approve(Integer resolverId, Integer reimbId) {
-        if (reimbId <= 0 || resolverId <=0){
+    public void approve(User user, Integer reimbId) {
+        if (reimbId <= 0 || user.getUserId() <=0){
             throw new RuntimeException("Invalid user field values provided!");
         }
-        if(!reimbRepo.updateFIN(resolverId, 2, reimbId)){
+        if(!reimbRepo.updateFIN(user, 2, reimbId)){
             throw new RuntimeException("Something went wrong trying to approve this reimbursement");
         }
     }
 
     /**
      * Deny a reimb.
-     * @param resolverId the Id of the fin manager resolving the reimb.
+     * @param user the user of the fin manager resolving the reimb.
      * @param reimbId id of the Reimb. to approve or disapprove.
      */
-    public void deny(Integer resolverId, Integer reimbId) {
+    public void deny(User user, Integer reimbId) {
         if (reimbId <= 0){
             throw new RuntimeException("Invalid user field values provided!");
         }
-        if(!reimbRepo.updateFIN(resolverId, 3, reimbId)){
+        if(!reimbRepo.updateFIN(user, 3, reimbId)){
             throw new RuntimeException("Something went wrong trying to deny this reimbursement");
         }
     }

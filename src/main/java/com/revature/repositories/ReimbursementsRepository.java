@@ -4,6 +4,7 @@ import com.revature.dtos.RbDTO;
 import com.revature.models.Reimbursement;
 import com.revature.models.ReimbursementStatus;
 import com.revature.models.ReimbursementType;
+import com.revature.models.User;
 import com.revature.util.ConnectionFactory;
 import com.revature.util.HibernateUtil;
 import org.hibernate.Session;
@@ -109,18 +110,14 @@ public class ReimbursementsRepository {
      * @throws SQLException e
      */
     public Optional<Reimbursement> getAReimbByReimbId(Integer reimbId) throws SQLException {
-        Optional<Reimbursement> reimbursement = Optional.empty();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1,reimbId);
-
-            ResultSet rs = ps.executeQuery();
-
-            reimbursement = mapResultSet(rs).stream().findFirst();
-        }
-        return reimbursement;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where id = "+reimbId;
+        Query query = session.createQuery(hql);
+        List<Reimbursement> list = query.list();
+        session.getTransaction().commit();
+        session.close();
+        return Optional.of(list.get(0));
     }
 
     /**
@@ -130,20 +127,15 @@ public class ReimbursementsRepository {
      * @throws SQLException e
      */
     public List<RbDTO> getAllReimbSetByAuthorId(Integer authorId){
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.author_id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1,authorId);
-
-            ResultSet rs = ps.executeQuery();
-
-            reimbursements = mapResultSetDTO(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return reimbursements;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where author_id = "+authorId;
+        Query query = session.createQuery(hql);
+        List<Reimbursement> list = query.list();
+        List<RbDTO> r_list = mapResultListToDTO(list);
+        session.getTransaction().commit();
+        session.close();
+        return r_list;
     }
 
     /**
@@ -285,23 +277,24 @@ public class ReimbursementsRepository {
         return false;
     }
 
-    public boolean updateFIN(Integer resolverId, Integer statusId, Integer reimbId) {
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseUpdate +
-                    "SET resolver_id=?, reimbursement_status_id=?, resolved=CURRENT_TIMESTAMP\n" +
-                    "WHERE id=?\n";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, resolverId);
-            ps.setInt(2, statusId);
-            ps.setInt(3,reimbId);
-
-            //get the number of affected rows
-            int rowsInserted = ps.executeUpdate();
-            return rowsInserted != 0;
-        } catch (SQLException e) {
+    public boolean updateFIN(User user, Integer statusId, Integer reimbId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        session.getTransaction().commit();
+        try {
+            Reimbursement reimbursement = getAReimbByReimbId(reimbId).get();
+            reimbursement.setReimbursementStatus(ReimbursementStatus.getByNumber(statusId));
+            reimbursement.setResolver(user);
+            session.update(reimbursement);
+            session.getTransaction().commit();
+            session.close();
+            return true;
+        }catch(Exception e) {
             e.printStackTrace();
+            session.getTransaction().rollback();
+            session.close();
+            return false;
         }
-        return false;
     }
 
     /**
