@@ -86,8 +86,10 @@ public class UserRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        String hql = "FROM User where username = "+userName;
+        String hql = "FROM User WHERE username = :name";
         Query<User> query = session.createQuery(hql);
+        query.setParameter("name",userName);
+        List<User> results = query.list();
 
         List<User> list = query.list();
 
@@ -121,7 +123,7 @@ public class UserRepository {
             return Optional.of(results.get(0));
 
         } catch (Exception e){
-            session.getTransaction().rollback();
+            //session.getTransaction().rollback();
             session.close();
             e.printStackTrace();
             return Optional.empty();

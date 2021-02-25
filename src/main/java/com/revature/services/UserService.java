@@ -62,7 +62,7 @@ public class UserService {
         if (existingUserEmail.isPresent()) {
             throw new RuntimeException("Email is already in use");
         }
-        newUser.setUserRole(Role.EMPLOYEE.ordinal() + 1);
+        newUser.setUserRole(Role.EMPLOYEE.ordinal());
         userRepo.addUser(newUser);
     }
 
