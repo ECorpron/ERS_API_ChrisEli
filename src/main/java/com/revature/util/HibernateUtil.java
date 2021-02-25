@@ -11,6 +11,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class HibernateUtil {
@@ -22,11 +25,35 @@ public class HibernateUtil {
 
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
-                settings.put(Environment.DRIVER, "org.postgresql.Driver");
-                settings.put(Environment.URL, System.getProperty("url"));
-                settings.put(Environment.USER, System.getProperty("user"));
-                settings.put(Environment.PASS, System.getProperty("password"));
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
+
+                File temp = new File("src/main/resources/properties.properties");
+
+                if (temp.exists()) {
+                    try {
+                        Properties props = new Properties();
+
+                        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+                        InputStream input = loader.getResourceAsStream("properties.properties");
+
+                        props.load(input);
+
+                        settings.put(Environment.DRIVER, "org.postgresql.Driver");
+                        settings.put(Environment.URL, props.getProperty("url"));
+                        //System.out.println(props.getProperty("url"));
+                        settings.put(Environment.USER, props.getProperty("username"));
+                        settings.put(Environment.PASS, props.getProperty("password"));
+                        settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    settings.put(Environment.DRIVER, "org.postgresql.Driver");
+                    settings.put(Environment.URL, System.getProperty("url"));
+                    settings.put(Environment.USER, System.getProperty("user"));
+                    settings.put(Environment.PASS, System.getProperty("password"));
+                    settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
+                }
 
 //                System.out.println("+------------------------------------------------------");
 //
@@ -55,7 +82,7 @@ public class HibernateUtil {
                 e.printStackTrace();
             }
         }
-        System.out.println("Session factory is made: "+sessionFactory == null);
+        //System.out.println("Session factory is made: "+sessionFactory == null);
         return sessionFactory;
     }
 }
