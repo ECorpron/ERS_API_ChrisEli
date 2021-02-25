@@ -28,6 +28,14 @@ public class HibernateUtil {
                 settings.put(Environment.PASS, System.getenv("password"));
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
 
+                System.out.println("+------------------------------------------------------");
+
+                System.out.println("The URL is: "+System.getenv("url"));
+                System.out.println("The Username is: "+System.getenv("user"));
+                System.out.println("The password is: "+System.getenv("password"));
+
+                System.out.println("+-------------------------------------------------------");
+
                 //settings.put(Environment.SHOW_SQL, "true");
 
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
@@ -47,6 +55,7 @@ public class HibernateUtil {
                 e.printStackTrace();
             }
         }
+        System.out.println("Session factory is made: "+sessionFactory == null);
         return sessionFactory;
     }
 }
