@@ -50,7 +50,7 @@ public class HibernateUtil {
                 else {
                     settings.put(Environment.DRIVER, "org.postgresql.Driver");
                     settings.put(Environment.URL, System.getProperty("url"));
-                    settings.put(Environment.USER, System.getProperty("user"));
+                    settings.put(Environment.USER, System.getProperty("username"));
                     settings.put(Environment.PASS, System.getProperty("password"));
                     settings.put(Environment.DIALECT, "org.hibernate.dialect.PostgreSQL82Dialect");
                 }
