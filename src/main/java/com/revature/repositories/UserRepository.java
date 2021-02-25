@@ -71,15 +71,21 @@ public class UserRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
-        String hql = "FROM User where email = "+email;
+        String hql = "FROM User WHERE email = :email";
         Query<User> query = session.createQuery(hql);
+        query.setParameter("email", email);
+        List<User> results = query.list();
 
         List<User> list = query.list();
 
         session.getTransaction().commit();
         session.close();
 
-        return Optional.of(list.get(0));
+        if (list.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
     }
 
     public Optional<User> getAUserByUsername(String userName) {
@@ -88,7 +94,7 @@ public class UserRepository {
 
         String hql = "FROM User WHERE username = :name";
         Query<User> query = session.createQuery(hql);
-        query.setParameter("name",userName);
+        query.setParameter("name", userName);
         List<User> results = query.list();
 
         List<User> list = query.list();
@@ -96,7 +102,11 @@ public class UserRepository {
         session.getTransaction().commit();
         session.close();
 
-        return Optional.of(list.get(0));
+        if (list.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
     }
 
     /**
