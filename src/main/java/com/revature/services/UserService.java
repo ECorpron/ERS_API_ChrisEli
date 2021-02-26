@@ -10,12 +10,16 @@ import java.util.Optional;
 
 /**
  * Constitutes the SERVICE LAYER for users. concerned with validating all user
- * input before being sent to the database.
+ * input before being sent to the database. Uses a Singleton model
  */
 public class UserService {
     private UserRepository userRepo = new UserRepository();
     private static UserService userService = new UserService();
 
+    /**
+     * A getter for the user service instance
+     * @return returns the instance of the user service
+     */
     public static UserService getInstance() {
         return userService;
     }
@@ -32,7 +36,13 @@ public class UserService {
         return users;
     }
 
-    public User getAUserById(int userId) {
+    /**
+     * Gets a user by the specified id. Throws an error if no user is found.
+     * @param userId the User id to search a user for
+     * @return returns a user if one is found
+     * @throws UserNotPresentException throws an error if no corresponding user is found
+     */
+    public User getAUserById(int userId) throws UserNotPresentException{
         Optional<User> user = userRepo.getAUserByUserId(userId);
         if(!user.isPresent()) {
             throw new UserNotPresentException("Sorry, but no user exists with the Id " + userId);
@@ -58,7 +68,6 @@ public class UserService {
      * Register a new user in the DB. validates all fields first
      * @param newUser completed user object
      */
-    // TODO: encrypt all user passwords before persisting to data source
     public void register(User newUser) {
         if (!isUserValid(newUser)) {
             throw new InvalidCredentialsException("Invalid user field values provided during registration!");
@@ -112,7 +121,7 @@ public class UserService {
 
     /**
      * Method for simple checking of availability of email
-     * @param email
+     * @param email the email to be searched for
      * @return true if available
      */
     public boolean isEmailAvailable(String email) {
@@ -124,7 +133,7 @@ public class UserService {
      * Validates that the given user and its fields are valid (not null or empty strings). Does
      * not perform validation on id or role fields.
      *
-     * @param user
+     * @param user the user to verify has valid fields
      * @return true or false depending on if the user was valid or not
      */
     public boolean isUserValid(User user) {

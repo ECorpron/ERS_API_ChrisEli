@@ -1,9 +1,11 @@
 package com.revature.util;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Class that hashes passwords going into the database using the MD5 encrypter.
+ */
 public class PasswordHash {
     private static PasswordHash hash = new PasswordHash();
 
