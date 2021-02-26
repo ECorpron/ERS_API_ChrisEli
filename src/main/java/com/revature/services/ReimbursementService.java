@@ -160,16 +160,23 @@ public class ReimbursementService {
         System.out.println(reimb);
     }
 
-    public void updateReimbursemntByRbDTO(RbDTO reimb) {
+    public void updateReimbursemntByRbDTO(RbDTO reimb, User user) {
         try {
-            Optional<Reimbursement> reimbursement = reimbRepo.getAReimbByReimbId(reimb.getId());
+            Optional<Reimbursement> reimbursement = reimbRepo.getAReimbByReimbIdAndUserId(user.getUserId(), reimb.getId());
             if(reimbursement.isPresent()) {
                 Reimbursement updated_reimb = reimbursement.get();
                 updated_reimb.setAmount(reimb.getAmount());
                 updated_reimb.setDescription(reimb.getDescription());
-                updated_reimb.setReimbursementType(ReimbursementType.valueOf(reimb.getType()));
-                updated_reimb.setReimbursementStatus(ReimbursementStatus.valueOf(reimb.getStatus()));
+
+                if (reimb.getType() != null) {
+                    updated_reimb.setReimbursementType(ReimbursementType.valueOf(reimb.getType()));
+                }
+                if (reimb.getStatus() != null) {
+                    updated_reimb.setReimbursementStatus(ReimbursementStatus.valueOf(reimb.getStatus()));
+                }
                 reimbRepo.updateEMP(updated_reimb);
+            } else {
+                throw new RuntimeException("This account has no such reimbursement to update!");
             }
 
         }catch(Exception e) {

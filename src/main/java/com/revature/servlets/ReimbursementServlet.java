@@ -103,7 +103,7 @@ public class ReimbursementServlet extends HttpServlet {
             return;
         }
         if(rqst != null && rqst.getUserRole() == Role.EMPLOYEE.ordinal()) {
-           employeePut(req,resp,mapper);
+           employeePut(req,resp,mapper, rqst);
            return;
         }
         resp.setStatus(404);
@@ -144,10 +144,11 @@ public class ReimbursementServlet extends HttpServlet {
         }
     }
 
-    private void employeePut(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper) {
+    private void employeePut(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper, User rqst) {
         try {
             RbDTO reimbursement = mapper.readValue(req.getInputStream(), RbDTO.class);
-            ReimbursementService.getInstance().updateReimbursemntByRbDTO(reimbursement);
+
+            ReimbursementService.getInstance().updateReimbursemntByRbDTO(reimbursement, rqst);
             resp.setStatus(200);
             return;
         }catch(Exception e) {
