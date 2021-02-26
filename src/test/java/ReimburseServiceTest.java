@@ -5,6 +5,6 @@ public class ReimburseServiceTest {
     public static void main(String[] args) {
         ReimbursementService reimbursementService = ReimbursementService.getInstance();
 
-        reimbursementService.getReimbByUserId(15);
+        System.out.println("Number of reimbursements for account 15: "+reimbursementService.getReimbByUserId(15).size());
     }
 }

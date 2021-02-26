@@ -8,6 +8,7 @@ import com.revature.models.User;
 import com.revature.repositories.ReimbursementsRepository;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,11 +52,8 @@ public class ReimbursementService {
         if (userId <= 0){
             throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
-        List<RbDTO> reimb = null;
+        List<RbDTO> reimb = new ArrayList<>();
         reimb = reimbRepo.getAllReimbSetByAuthorId(userId);
-        if (reimb.isEmpty()){
-            throw new RuntimeException();
-        }
         return reimb;
     }
 

@@ -48,6 +48,7 @@ public class ReimbursementServlet extends HttpServlet {
         Integer reimbursementId = Integer.getInteger(id);
 
         if (reimbursementId == null) {
+
             List<RbDTO> reimbursements = ReimbursementService.getInstance().getReimbByUserId(rsqt.getUserId());
             try {
                 String usersJSON = mapper.writeValueAsString(reimbursements);
