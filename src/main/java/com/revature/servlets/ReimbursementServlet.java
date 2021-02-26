@@ -29,7 +29,6 @@ public class ReimbursementServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         User rqst = (session == null) ? null : (User) req.getSession(false).getAttribute("this-user");
         resp.setContentType("application/json");
-        String userIdParam = req.getParameter("userId");
 
         if (rqst != null && rqst.getUserRole() == Role.FINANCE_MANAGER.ordinal()) {
             financeManageDoGet(req, resp, mapper, writer);
@@ -239,6 +238,5 @@ public class ReimbursementServlet extends HttpServlet {
             getReimbursementByStatus(resp,mapper,writer,status);
             return;
         }
-
     }
 }
