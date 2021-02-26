@@ -17,7 +17,7 @@ public class UserServiceTest {
 
         User user = service.getAUserById(17);
         user.setUsername("Admin");
-        user.setUserRole(1d);
+        user.setUserRole(1);
 
         //service.register(user);
         service.update(user);
