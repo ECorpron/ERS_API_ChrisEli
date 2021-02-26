@@ -463,7 +463,6 @@ public class ReimbursementsRepository {
             rbDTO.setType(objs.getReimbursementStatus().toString());
             reimbs.add(rbDTO);
         }
-
         return reimbs;
     }
 }
