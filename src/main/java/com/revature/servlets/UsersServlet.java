@@ -2,8 +2,7 @@ package com.revature.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.dtos.ErrorResponse;
-import com.revature.exceptions.FieldNotUniqueException;
-import com.revature.exceptions.InvalidCredentialsException;
+import com.revature.exceptions.*;
 import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.services.UserService;
@@ -47,15 +46,11 @@ public class UsersServlet extends HttpServlet {
             User newUser = mapper.readValue(req.getInputStream(),User.class);
             userService.register(newUser);
             resp.setStatus(200);
-        } catch (FieldNotUniqueException fnu){
+        } catch (FieldNotUniqueException | InvalidCredentialsException fnu){
             ErrorResponse err = new ErrorResponse(409,fnu.getMessage());
-            resp.setStatus(409); //conflict
-            writer.write(mapper.writeValueAsString(err));
-        } catch(InvalidCredentialsException ice) {
             resp.setStatus(409);
-            ErrorResponse err = new ErrorResponse(409,ice.getMessage());
             writer.write(mapper.writeValueAsString(err));
-        }catch(Exception e) {
+        } catch(Exception e) {
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
             resp.setStatus(418);
             writer.write(mapper.writeValueAsString(err));
@@ -78,17 +73,23 @@ public class UsersServlet extends HttpServlet {
         User rqst = (session == null) ? null : (User) req.getSession(false).getAttribute("this-user");
         resp.setContentType("application/json");
         try {
-
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
+                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
                 resp.setStatus(401);
+                writer.write(mapper.writeValueAsString(err));
                 return;
             }
             User updateUser = mapper.readValue(req.getInputStream(),User.class);
             userService.update(updateUser);
             resp.setStatus(200);
-        } catch (RuntimeException e){
-            e.printStackTrace();
-            resp.setStatus(409); //conflict
+        } catch (InvalidUserFieldsException | UpdateObjectException iufe){
+            resp.setStatus(409);
+            ErrorResponse err = new ErrorResponse(409,iufe.getMessage());
+            writer.write(mapper.writeValueAsString(err));
+        } catch(Exception e) {
+            ErrorResponse err = new ErrorResponse(418,e.getMessage());
+            resp.setStatus(418);
+            writer.write(mapper.writeValueAsString(err));
         }
     }
 
@@ -106,25 +107,29 @@ public class UsersServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         User rqst = (session == null) ? null : (User) req.getSession(false).getAttribute("this-user");
         resp.setContentType("application/json");
-
         try {
-
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
+                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
                 resp.setStatus(401);
+                writer.write(mapper.writeValueAsString(err));
                 return;
             }
-
             User toDelete = mapper.readValue(req.getInputStream(),User.class);
             if (userService.deleteUserById(toDelete.getUserId())) {
                 resp.setStatus(200);
             } else {
+                ErrorResponse err = new ErrorResponse(404,"Not able to delete user");
                 resp.setStatus(404);
+                writer.write(mapper.writeValueAsString(err));
             }
-
-
-        } catch (RuntimeException e){
-            e.printStackTrace();
-            resp.setStatus(409); //conflict
-        }
+        } catch (InvalidIdException ie){
+            resp.setStatus(409);
+            ErrorResponse err = new ErrorResponse(409,ie.getMessage());
+            writer.write(mapper.writeValueAsString(err));
+        } catch(Exception e) {
+            resp.setStatus(418);
+            ErrorResponse err = new ErrorResponse(418,e.getMessage());
+            writer.write(mapper.writeValueAsString(err));
+    }
     }
 }
