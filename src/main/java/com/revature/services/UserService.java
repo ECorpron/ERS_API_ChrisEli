@@ -23,12 +23,20 @@ public class UserService {
      * Gets all users from the DataBase
      * @return A list of Users
      */
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() throws RuntimeException{
         List<User> users = userRepo.getAllusers();
         if (users.isEmpty()){
             throw new RuntimeException();
         }
         return users;
+    }
+
+    public User getAUserById(int userId) throws RuntimeException{
+        Optional<User> user = userRepo.getAUserByUserId(userId);
+        if(!user.isPresent()) {
+            throw new RuntimeException();
+        }
+        return user.get();
     }
 
     /**

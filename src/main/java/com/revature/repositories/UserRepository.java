@@ -55,6 +55,21 @@ public class UserRepository {
         Query<User> query = session.createQuery(hql);
         return query.list();
     }
+    public Optional<User> getAUserByUserId(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM User WHERE id = :id";
+        Query<User> query = session.createQuery(hql);
+        query.setParameter("id", id);
+        List<User> list = query.list();
+        session.getTransaction().commit();
+        session.close();
+        if (list.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
+    }
 
     /**
      * A method to get a single User by email
