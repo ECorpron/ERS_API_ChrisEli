@@ -230,17 +230,14 @@ public class ReimbursementServlet extends HttpServlet {
     }
 
     private void financeManageDoGet(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper, PrintWriter writer) {
-        String reimbursement = req.getParameter("reimburseAccount");
 
         String id = req.getParameter("id");
-        Integer reimbursementId = Integer.getInteger(id);
 
-        if (reimbursement == null || "".equals(reimbursement.trim())) {
-            if (id == null) {
-                getAllReimbursements(resp, mapper, writer);
-            } else {
-                getSpecificReimbursement(resp, mapper, writer, reimbursementId);
-            }
+        if (id == null) {
+            getAllReimbursements(resp, mapper, writer);
+        } else {
+            int reimbursementId = Integer.parseInt(id);
+            getSpecificReimbursement(resp, mapper, writer, reimbursementId);
             return;
         }
 
