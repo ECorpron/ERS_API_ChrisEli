@@ -21,7 +21,6 @@ public class UsersServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
 
-
     /**
      * Admin can create a new User account. It will be initiated as an Employee.
      * @param req
@@ -38,8 +37,9 @@ public class UsersServlet extends HttpServlet {
         resp.setContentType("application/json");
         try {
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
-                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
-                resp.setStatus(401);
+                final int code = (rqst == null)? 401 : 403;
+                ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
+                resp.setStatus(code);
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -74,8 +74,9 @@ public class UsersServlet extends HttpServlet {
         resp.setContentType("application/json");
         try {
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
-                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
-                resp.setStatus(401);
+                final int code = (rqst == null)? 401 : 403;
+                ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
+                resp.setStatus(code);
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -109,8 +110,9 @@ public class UsersServlet extends HttpServlet {
         resp.setContentType("application/json");
         try {
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
-                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
-                resp.setStatus(401);
+                final int code = (rqst == null)? 401 : 403;
+                ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
+                resp.setStatus(code);
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -130,6 +132,6 @@ public class UsersServlet extends HttpServlet {
             resp.setStatus(418);
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
             writer.write(mapper.writeValueAsString(err));
-    }
+        }
     }
 }
