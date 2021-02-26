@@ -232,23 +232,31 @@ public class ReimbursementServlet extends HttpServlet {
     private void financeManageDoGet(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper, PrintWriter writer) {
 
         String id = req.getParameter("id");
-
-        if (id == null) {
-            getAllReimbursements(resp, mapper, writer);
-        } else {
-            int reimbursementId = Integer.parseInt(id);
-            getSpecificReimbursement(resp, mapper, writer, reimbursementId);
-            return;
-        }
-
         String type = req.getParameter("type");
+        String status = req.getParameter("status");
+
         if (type != null && !"".equals(type.trim())) {
             getReimbursementByTpe(resp, mapper, writer, type);
             return;
         }
-        String status = req.getParameter("status");
+
         if (status != null && !"".equals(status.trim())) {
             getReimbursementByStatus(resp,mapper,writer,status);
+            resp.setStatus(200);
+            return;
+        }
+
+        if (id == null) {
+            getAllReimbursements(resp, mapper, writer);
+        } else {
+            int reimbursementId;
+            try {
+                reimbursementId = Integer.parseInt(id);
+            } catch (NumberFormatException n) {
+                resp.setStatus(401);
+                return;
+            }
+            getSpecificReimbursement(resp, mapper, writer, reimbursementId);
             return;
         }
     }
