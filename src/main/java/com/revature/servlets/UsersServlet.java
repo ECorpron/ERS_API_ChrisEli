@@ -25,11 +25,10 @@ public class UsersServlet extends HttpServlet {
      * Admin can create a new User account. It will be initiated as an Employee.
      * @param req
      * @param resp
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         PrintWriter writer = resp.getWriter();
         ObjectMapper mapper = new ObjectMapper();
         HttpSession session = req.getSession(false);
@@ -62,11 +61,10 @@ public class UsersServlet extends HttpServlet {
      * Admin can update an account
      * @param req
      * @param resp
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         PrintWriter writer = resp.getWriter();
         ObjectMapper mapper = new ObjectMapper();
         HttpSession session = req.getSession(false);
@@ -98,11 +96,10 @@ public class UsersServlet extends HttpServlet {
      * Admin can delete an account
      * @param req
      * @param resp
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
         ObjectMapper mapper = new ObjectMapper();
         HttpSession session = req.getSession(false);
