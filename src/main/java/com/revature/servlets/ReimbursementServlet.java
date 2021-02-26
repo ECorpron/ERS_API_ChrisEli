@@ -106,7 +106,7 @@ public class ReimbursementServlet extends HttpServlet {
             employeePost(req,resp,rqst,mapper);
             return;
         }
-        resp.setStatus(404);
+        resp.setStatus(401);
 
     }
 

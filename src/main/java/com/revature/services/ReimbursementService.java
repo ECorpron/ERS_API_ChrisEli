@@ -133,7 +133,6 @@ public class ReimbursementService {
         if(!reimbRepo.addReimbursement(reimb)){
             throw new RuntimeException("Something went wrong trying to save this reimbursement");
         }
-        System.out.println(reimb);
     }
 
     public void saveRbDTO(User user, RbDTO rbdto) {
@@ -232,7 +231,7 @@ public class ReimbursementService {
         if (reimb == null) return false;
         if (reimb.getAmount() == null || reimb.getAmount() <= 0 ) return false;
         if (reimb.getDescription() == null || reimb.getDescription().trim().equals("")) return false;
-        if (reimb.getAuthor() != null ) return false;
+        if (reimb.getAuthor() == null ) return false;
         if (reimb.getReimbursementType() == null ) return false;
         return true;
     }

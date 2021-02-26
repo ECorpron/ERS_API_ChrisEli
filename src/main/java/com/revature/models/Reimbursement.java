@@ -204,7 +204,7 @@ public class Reimbursement {
                 ", resolved=" + resolved +
                 ", description='" + description + '\'' +
                 ", authorId=" + author +
-                ", resolverId=" + resolver +
+                ", resolver=" + resolver +
                 ", reimbursementStatus=" + reimbursementStatus +
                 ", reimbursementType=" + reimbursementType +
                 '}';
