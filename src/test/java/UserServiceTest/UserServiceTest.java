@@ -70,7 +70,7 @@ public class UserServiceTest {
         assertTrue(mockservice.isUserValid(admin));
         User user = new User();
         user.setUsername("");
-        assertFalse(mockservice.isUserValid());
+        assertFalse(mockservice.isUserValid(user));
     }
 
     @Test
