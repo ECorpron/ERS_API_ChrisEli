@@ -88,7 +88,7 @@ public class ReimbursementServlet extends HttpServlet {
             managerPut(req,resp,rqst,mapper);
             return;
         }
-        if(rqst != null && rqst.getUserId() == Role.EMPLOYEE.ordinal()) {
+        if(rqst != null && rqst.getUserRole() == Role.EMPLOYEE.ordinal()) {
            employeePut(req,resp,mapper);
            return;
         }
@@ -102,7 +102,7 @@ public class ReimbursementServlet extends HttpServlet {
         HttpSession session = req.getSession(false);
         User rqst = (session == null) ? null : (User) req.getSession(false).getAttribute("this-user");
         resp.setContentType("application/json");
-        if(rqst != null && rqst.getUserId() == Role.EMPLOYEE.ordinal()) {
+        if(rqst != null && rqst.getUserRole() == Role.EMPLOYEE.ordinal()) {
             employeePost(req,resp,rqst,mapper);
             return;
         }
