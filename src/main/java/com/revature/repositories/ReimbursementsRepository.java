@@ -6,7 +6,6 @@ import com.revature.models.ReimbursementStatus;
 import com.revature.models.ReimbursementType;
 import com.revature.models.User;
 import com.revature.services.UserService;
-import com.revature.util.ConnectionFactory;
 import com.revature.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
