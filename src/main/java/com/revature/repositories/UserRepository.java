@@ -1,9 +1,6 @@
 package com.revature.repositories;
 
-import com.revature.dtos.RbDTO;
-import com.revature.models.Reimbursement;
 import com.revature.models.User;
-import com.revature.util.ConnectionFactory;
 import com.revature.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -12,9 +9,6 @@ import java.sql.*;
 import java.util.*;
 
 public class UserRepository {
-    private String baseQuery = "SELECT * FROM project_1.ers_users eu ";
-    private String baseInsert = "INSERT INTO project_1.ers_users ";
-    private String baseUpdate = "UPDATE project_1.ers_users eu ";
 
     public UserRepository(){
         super();
