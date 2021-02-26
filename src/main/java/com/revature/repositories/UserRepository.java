@@ -147,6 +147,7 @@ public class UserRepository {
             Query<User> query = session.createQuery(hql);
             query.setParameter("name",userName);
             query.setParameter("pass", password);
+
             List<User> results = query.list();
             session.getTransaction().commit();
             session.close();
