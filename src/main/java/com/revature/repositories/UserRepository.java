@@ -3,6 +3,8 @@ package com.revature.repositories;
 import com.revature.models.User;
 import com.revature.util.HibernateUtil;
 import com.revature.util.PasswordHash;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -12,7 +14,7 @@ import java.util.*;
  * Handles all CRUD methods accessing the User table in the database. Uses Hibernate
  */
 public class UserRepository {
-
+    private static final Logger logger = LogManager.getLogger(UserRepository.class);
     /**
      * Empty constructor
      */
@@ -150,9 +152,8 @@ public class UserRepository {
             session.close();
             return Optional.of(results.get(0));
         } catch (Exception e){
-            //session.getTransaction().rollback();
             session.close();
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             return Optional.empty();
         }
     }
@@ -170,12 +171,11 @@ public class UserRepository {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
-            //session.evict(newUser)?
             session.merge(newUser);
         } catch (Exception e){
             session.getTransaction().rollback();
             session.close();
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             return false;
         }
 
@@ -196,13 +196,12 @@ public class UserRepository {
         session.beginTransaction();
 
         try {
-            //session.evict(newUser)?
             User delete = session.find(User.class, userId);
             session.remove(delete);
         } catch (Exception e){
             session.getTransaction().rollback();
             session.close();
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             return false;
         }
 
