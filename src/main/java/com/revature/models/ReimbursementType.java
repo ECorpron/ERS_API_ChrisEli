@@ -9,6 +9,7 @@ import javax.persistence.Table;
 public enum ReimbursementType {
     // values declared within enums are constants and are comma separated
     //@Column(name = "REIMB_TYPE", nullable = false, unique = true)
+    DEFAULT("Default"),
     LODGING("Lodging"),
     TRAVEL("Travel"),
     FOOD("Food"),
