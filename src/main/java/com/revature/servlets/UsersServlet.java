@@ -32,7 +32,7 @@ public class UsersServlet extends HttpServlet {
         resp.setContentType("application/json");
         try {
             if (rqst == null || rqst.getUserRole() != Role.ADMIN.ordinal()) {
-                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.")
+                ErrorResponse err = new ErrorResponse(401,"Not authorized to post.");
                 resp.setStatus(401);
                 writer.write(mapper.writeValueAsString(err));
                 return;
