@@ -35,7 +35,7 @@ public class ReimbursementServlet extends HttpServlet {
             financeManageDoGet(req, resp, mapper, writer);
             return;
         }
-        if(rqst != null && rqst.getUserId() == Role.EMPLOYEE.ordinal()) {
+        if(rqst != null && rqst.getUserRole() == Role.EMPLOYEE.ordinal()) {
             employeeDoGet(req, resp, rqst, mapper, writer);
             return;
         }
