@@ -421,7 +421,6 @@ public class ReimbursementsRepository {
             rbDTO.setAuthorName(objs.getAuthor().getFirstname()+" "+objs.getAuthor().getLastname());
             rbDTO.setStatus(objs.getReimbursementStatus().toString());
             rbDTO.setType(objs.getReimbursementStatus().toString());
-
             reimbs.add(rbDTO);
         }
 
