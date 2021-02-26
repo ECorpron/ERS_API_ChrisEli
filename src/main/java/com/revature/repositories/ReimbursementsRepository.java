@@ -7,6 +7,7 @@ import com.revature.models.ReimbursementType;
 import com.revature.models.User;
 import com.revature.services.UserService;
 import com.revature.util.HibernateUtil;
+import com.revature.util.PasswordHash;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

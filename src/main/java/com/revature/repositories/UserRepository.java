@@ -2,6 +2,7 @@ package com.revature.repositories;
 
 import com.revature.models.User;
 import com.revature.util.HibernateUtil;
+import com.revature.util.PasswordHash;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -23,6 +24,8 @@ public class UserRepository {
      * @throws SQLException e
      */
     public boolean addUser(User newUser)  {
+        newUser.setPassword(PasswordHash.getInstance().hashing(newUser.getPassword()));
+
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
 
@@ -112,6 +115,8 @@ public class UserRepository {
      */
     @SuppressWarnings("unchecked")
     public Optional<User> getAUserByUsernameAndPassword(String userName, String password) {
+        password = PasswordHash.getInstance().hashing(password);
+
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
@@ -134,6 +139,8 @@ public class UserRepository {
     //---------------------------------- UPDATE -------------------------------------------- //
 
     public boolean updateAUser(User newUser) {
+        newUser.setPassword(PasswordHash.getInstance().hashing(newUser.getPassword()));
+
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
