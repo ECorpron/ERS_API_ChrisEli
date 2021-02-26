@@ -7,6 +7,8 @@ import com.revature.models.ReimbursementType;
 import com.revature.models.User;
 import com.revature.services.UserService;
 import com.revature.util.HibernateUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -17,6 +19,8 @@ import java.util.*;
  * A class to interact with the database to CRUD reimbursement objects
  */
 public class ReimbursementsRepository {
+    private static final Logger logger = LogManager.getLogger(ReimbursementsRepository.class);
+
     public ReimbursementsRepository(){
         super();
     }
@@ -36,7 +40,7 @@ public class ReimbursementsRepository {
         } catch (Exception e){
             session.getTransaction().rollback();
             session.close();
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             return false;
         }
 
@@ -264,7 +268,8 @@ public class ReimbursementsRepository {
         } catch (Exception e){
             session.getTransaction().rollback();
             session.close();
-            e.printStackTrace();
+
+            logger.error(e.getStackTrace());
             return false;
         }
         session.getTransaction().commit();
@@ -295,7 +300,7 @@ public class ReimbursementsRepository {
             session.close();
             return true;
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
             session.close();
             return false;
@@ -322,7 +327,7 @@ public class ReimbursementsRepository {
                 return true;
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
         }
         session.close();
@@ -350,7 +355,7 @@ public class ReimbursementsRepository {
                 return true;
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
         }
         session.close();
@@ -377,7 +382,7 @@ public class ReimbursementsRepository {
                 return true;
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
         }
         session.close();
@@ -404,7 +409,7 @@ public class ReimbursementsRepository {
                 return true;
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
         }
         session.close();
@@ -431,7 +436,7 @@ public class ReimbursementsRepository {
                 return true;
             }
         }catch(Exception e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
             session.getTransaction().rollback();
         }
         session.close();
