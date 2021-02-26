@@ -7,6 +7,8 @@ import com.revature.dtos.ErrorResponse;
 import com.revature.exceptions.InvalidCredentialsException;
 import com.revature.models.User;
 import com.revature.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +23,8 @@ import java.io.PrintWriter;
  */
 @WebServlet("/authenticate")
 public class AuthenticationServlet extends HttpServlet {
-
     public final UserService userService = UserService.getInstance();
+    private static final Logger logger = LogManager.getLogger(AuthenticationServlet.class);
 
     /**
      * A client sends a post request with a Credentials object to try and log in
@@ -44,10 +46,12 @@ public class AuthenticationServlet extends HttpServlet {
         } catch (MismatchedInputException | InvalidCredentialsException e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         } catch(Exception e) {
             resp.setStatus(418);
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
 

@@ -9,6 +9,9 @@ import com.revature.exceptions.InvalidIdException;
 import com.revature.exceptions.NoReimbursementsException;
 import com.revature.models.*;
 import com.revature.services.ReimbursementService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,7 @@ import java.util.List;
  */
 @WebServlet("/reimburse")
 public class ReimbursementServlet extends HttpServlet {
+    private static final Logger logger = LogManager.getLogger(ReimbursementServlet.class);
 
     /**
      * Sent a get request to reimbursement if a client is trying to retrieve reimbursement info.
@@ -54,6 +58,7 @@ public class ReimbursementServlet extends HttpServlet {
         final int code = (rqst == null)? 401 : 403;
         final ErrorResponse err = new ErrorResponse(code,"Not authorized.");
         resp.setStatus(code);
+        logger.info(err.toString());
         writer.write(mapper.writeValueAsString(err));
     }
 
@@ -82,12 +87,12 @@ public class ReimbursementServlet extends HttpServlet {
                 reimb = ReimbursementService.getInstance().getReimbByUserAndReimbId(rsqt.getUserId(), reimbursementId);
                 String usersJSON = mapper.writeValueAsString(reimb);
                 writer.write(usersJSON);
-                resp.setStatus(200);
             }
             resp.setStatus(200);
         }catch(InvalidIdException | NoReimbursementsException  ie) {
             final ErrorResponse err = new ErrorResponse(404,ie.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             resp.getWriter().write(mapper.writeValueAsString(err));
 
         }
@@ -118,6 +123,7 @@ public class ReimbursementServlet extends HttpServlet {
         final int code = (rqst == null)? 401 : 403;
         final ErrorResponse err = new ErrorResponse(code,"Not authorized to put.");
         resp.setStatus(code);
+        logger.info(err.toString());
         writer.write(mapper.writeValueAsString(err));
 
     }
@@ -143,6 +149,7 @@ public class ReimbursementServlet extends HttpServlet {
         final int code = (rqst == null)? 401 : 403;
         final ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
         resp.setStatus(code);
+        logger.info(err.toString());
         writer.write(mapper.writeValueAsString(err));
     }
 
@@ -168,6 +175,7 @@ public class ReimbursementServlet extends HttpServlet {
         } catch (Exception e) {
             final ErrorResponse err = new ErrorResponse(406,e.getMessage());
             resp.setStatus(406);
+            logger.info(err.toString());
             resp.getWriter().write(mapper.writeValueAsString(err));
         }
     }
@@ -190,6 +198,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         }catch(Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             resp.getWriter().write(mapper.writeValueAsString(err));
         }
     }
@@ -212,6 +221,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         }catch(Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             resp.getWriter().write(mapper.writeValueAsString(err));
         }
 
@@ -234,6 +244,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         } catch (Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
@@ -255,6 +266,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         } catch (Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
@@ -276,6 +288,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         } catch (Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
@@ -297,6 +310,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         } catch (Exception e) {
             final ErrorResponse err = new ErrorResponse(404,e.getMessage());
             resp.setStatus(404);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
@@ -333,6 +347,7 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
                 } catch (NumberFormatException n) {
                     final ErrorResponse err = new ErrorResponse(401,n.getMessage());
                     resp.setStatus(401);
+                    logger.info(err.toString());
                     resp.getWriter().write(mapper.writeValueAsString(err));
                     return;
                 }
@@ -341,10 +356,12 @@ private void employeePut(HttpServletRequest req, HttpServletResponse resp, Objec
         }catch(InvalidIdException | NoReimbursementsException re) {
             final ErrorResponse err = new ErrorResponse(406,re.getMessage());
             resp.setStatus(406);
+            logger.info(err.toString());
             resp.getWriter().write(mapper.writeValueAsString(err));
         } catch(Exception e) {
             resp.setStatus(418);
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
