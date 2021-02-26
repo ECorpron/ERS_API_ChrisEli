@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.exceptions.*;
 import com.revature.models.Role;
 import com.revature.models.User;
 import com.revature.repositories.UserRepository;
@@ -23,18 +24,18 @@ public class UserService {
      * Gets all users from the DataBase
      * @return A list of Users
      */
-    public List<User> getAllUsers() throws RuntimeException{
+    public List<User> getAllUsers() {
         List<User> users = userRepo.getAllusers();
         if (users.isEmpty()){
-            throw new RuntimeException();
+            throw new NoUsersException("sorry, but no users found.");
         }
         return users;
     }
 
-    public User getAUserById(int userId) throws RuntimeException{
+    public User getAUserById(int userId) {
         Optional<User> user = userRepo.getAUserByUserId(userId);
         if(!user.isPresent()) {
-            throw new RuntimeException();
+            throw new UserNotPresentException("Sorry, but no user exists with the Id " + userId);
         }
         return user.get();
     }
@@ -45,9 +46,9 @@ public class UserService {
      * @param password password of the user
      * @return the object of the requested user
      */
-    public User authenticate(String username, String password){
+    public User authenticate(String username, String password) {
         if (username == null || username.trim().equals("") || password == null || password.trim().equals("")){
-            throw new RuntimeException("Invalid credentials provided");
+            throw new InvalidCredentialsException("username: " + username +" password: " + password + " is invalid.");
         }
         return userRepo.getAUserByUsernameAndPassword(username,password)
                 .orElseThrow(RuntimeException::new);
@@ -60,15 +61,15 @@ public class UserService {
     // TODO: encrypt all user passwords before persisting to data source
     public void register(User newUser) {
         if (!isUserValid(newUser)) {
-            throw new RuntimeException("Invalid user field values provided during registration!");
+            throw new InvalidCredentialsException("Invalid user field values provided during registration!");
         }
         Optional<User> existingUser = userRepo.getAUserByUsername(newUser.getUsername());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Username is already in use");
+            throw new FieldNotUniqueException("Username is already in use");
         }
         Optional<User> existingUserEmail = userRepo.getAUserByEmail(newUser.getEmail());
         if (existingUserEmail.isPresent()) {
-            throw new RuntimeException("Email is already in use");
+            throw new FieldNotUniqueException("Email is already in use");
         }
         newUser.setUserRole(Role.EMPLOYEE.ordinal());
         userRepo.addUser(newUser);
@@ -80,10 +81,10 @@ public class UserService {
      */
     public void update(User newUser) {
         if (!isUserValid(newUser)) {
-            throw new RuntimeException("Invalid user field values provided during registration!");
+            throw new InvalidUserFieldsException("Invalid user field values provided during registration!");
         }
         if (!userRepo.updateAUser(newUser)){
-            throw new RuntimeException("There was a problem trying to update the user");
+            throw new UpdateObjectException("There was a problem trying to update the user");
         }
     }
 
@@ -94,7 +95,7 @@ public class UserService {
      */
     public boolean deleteUserById(int id) {
         if (id <= 0){
-            throw new RuntimeException("THE PROVIDED ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+            throw new InvalidIdException("THE PROVIDED ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         return userRepo.deleteAUserById(id);
     }

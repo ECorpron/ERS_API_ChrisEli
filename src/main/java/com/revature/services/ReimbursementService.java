@@ -1,6 +1,10 @@
 package com.revature.services;
 
 import com.revature.dtos.RbDTO;
+import com.revature.exceptions.InvalidIdException;
+import com.revature.exceptions.InvalidUserFieldsException;
+import com.revature.exceptions.NoReimbursementsException;
+import com.revature.exceptions.ReimbursementSaveException;
 import com.revature.models.Reimbursement;
 import com.revature.models.ReimbursementStatus;
 import com.revature.models.ReimbursementType;
@@ -38,7 +42,7 @@ public class ReimbursementService {
         List<RbDTO> reimbursements = reimbRepo.getAllReimbursements();
 
         if (reimbursements.isEmpty()){
-            throw new RuntimeException();
+            throw new NoReimbursementsException("sorry but there does not seem to be any reimbursements at the moment.");
         }
         return reimbursements;
     }
@@ -50,7 +54,7 @@ public class ReimbursementService {
      */
     public List<RbDTO> getReimbByUserId(Integer userId){
         if (userId <= 0){
-            throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+            throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         List<RbDTO> reimb = new ArrayList<>();
         reimb = reimbRepo.getAllReimbSetByAuthorId(userId);
@@ -59,7 +63,7 @@ public class ReimbursementService {
 
     public RbDTO getReimbByReimbId(Integer userId){
         if (userId <= 0){
-            throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+            throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         RbDTO reimb = null;
         try {
@@ -82,7 +86,7 @@ public class ReimbursementService {
             if (temp.isPresent()) {
                 return reimbursementToRbDTO(temp.get());
             } else {
-                throw new RuntimeException();
+                throw new NoReimbursementsException("could not get the requested reimbursement.");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -97,11 +101,11 @@ public class ReimbursementService {
      */
     public List<RbDTO> getReimbByType(Integer typeId){
         if (typeId <= 0 || typeId >=5){
-            throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+            throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         List<RbDTO> reimb = reimbRepo.getAllReimbSetByType(typeId);
         if (reimb.isEmpty()){
-            throw new RuntimeException();
+            throw new NoReimbursementsException("sorry but could not find the requested reimbursement.");
         }
         return reimb;
     }
@@ -113,11 +117,11 @@ public class ReimbursementService {
      */
     public List<RbDTO> getReimbByStatus(Integer statusId){
         if (statusId <= 0 || statusId >= 4){
-            throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+            throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         List<RbDTO> reimb = reimbRepo.getAllReimbSetByStatus(statusId);
         if (reimb.isEmpty()){
-            throw new RuntimeException();
+            throw new NoReimbursementsException("sorry but could not find the requested reimbursement.");
         }
         return reimb;
     }
@@ -128,10 +132,10 @@ public class ReimbursementService {
      */
     public void save(Reimbursement reimb){
         if (!isReimbursementValid(reimb)){
-            throw new RuntimeException("Invalid user field values provided!");
+            throw new InvalidUserFieldsException("Invalid user field values provided!");
         }
         if(!reimbRepo.addReimbursement(reimb)){
-            throw new RuntimeException("Something went wrong trying to save this reimbursement");
+            throw new ReimbursementSaveException("Something went wrong trying to save this reimbursement");
         }
     }
 
@@ -152,10 +156,10 @@ public class ReimbursementService {
      */
     public void updateEMP(Reimbursement reimb) {
         if (!isReimbursementValid(reimb)){
-            throw new RuntimeException("Invalid user field values provided!");
+            throw new InvalidUserFieldsException("Invalid user field values provided!");
         }
         if(!reimbRepo.updateEMP(reimb)){
-            throw new RuntimeException("Something went wrong trying to save this reimbursement");
+            throw new ReimbursementSaveException("Something went wrong trying to save this reimbursement");
         }
         System.out.println(reimb);
     }
@@ -184,10 +188,10 @@ public class ReimbursementService {
      */
     public void approve(User user, Integer reimbId) {
         if (reimbId <= 0 || user.getUserId() <=0){
-            throw new RuntimeException("Invalid user field values provided!");
+            throw new InvalidUserFieldsException("Invalid user field values provided!");
         }
         if(!reimbRepo.updateFIN(user, 2, reimbId)){
-            throw new RuntimeException("Something went wrong trying to approve this reimbursement");
+            throw new ReimbursementSaveException("Something went wrong trying to approve this reimbursement");
         }
     }
 
@@ -198,10 +202,10 @@ public class ReimbursementService {
      */
     public void deny(User user, Integer reimbId) {
         if (reimbId <= 0){
-            throw new RuntimeException("Invalid user field values provided!");
+            throw new InvalidUserFieldsException("Invalid user field values provided!");
         }
         if(!reimbRepo.updateFIN(user, 3, reimbId)){
-            throw new RuntimeException("Something went wrong trying to deny this reimbursement");
+            throw new ReimbursementSaveException("Something went wrong trying to deny this reimbursement");
         }
     }
 
