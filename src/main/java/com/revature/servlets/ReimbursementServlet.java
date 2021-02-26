@@ -42,10 +42,10 @@ public class ReimbursementServlet extends HttpServlet {
     }
 
     private void employeeDoGet(HttpServletRequest req, HttpServletResponse resp, User rsqt, ObjectMapper mapper, PrintWriter writer) {
-        String reimbursement = req.getParameter("reimburseAccount");
-
-        String id = req.getParameter("id");
+        String id = req.getQueryString();
+        id = id.substring(3);
         Integer reimbursementId = Integer.getInteger(id);
+
 
         if (reimbursementId == null) {
 
