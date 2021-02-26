@@ -87,16 +87,13 @@ public class ReimbursementsRepository {
 
     public List<RbDTO> getAllReimbSetByStatus(Integer statusId) {
         //List<RbDTO> reimbursements = new ArrayList<>();
-
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
-        String hql = "FROM Reimbursement where reimbursement_status_id = "+statusId;
-        Query query = session.createQuery(hql);
-
+        String hql = "FROM Reimbursement where reimbursement_status_id = :id";
+        Query<Reimbursement> query = session.createQuery(hql);
+        query.setParameter("id",statusId);
         List<Reimbursement> list = query.list();
         List<RbDTO> reimbursements = mapResultListToDTO(list);
-
         session.getTransaction().commit();
         session.close();
 
@@ -112,8 +109,9 @@ public class ReimbursementsRepository {
     public Optional<Reimbursement> getAReimbByReimbId(Integer reimbId) throws SQLException {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        String hql = "FROM Reimbursement where id = "+reimbId;
+        String hql = "FROM Reimbursement where id = :reimbId";
         Query query = session.createQuery(hql);
+        query.setParameter("reimbId",reimbId);
         List<Reimbursement> list = query.list();
         session.getTransaction().commit();
         session.close();
@@ -144,8 +142,9 @@ public class ReimbursementsRepository {
     public List<RbDTO> getAllReimbSetByAuthorId(Integer authorId){
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        String hql = "FROM Reimbursement where author_id = "+authorId;
+        String hql = "FROM Reimbursement where author_id = :authorId";
         Query query = session.createQuery(hql);
+        query.setParameter("authorId",authorId);
         List<Reimbursement> list = query.list();
         List<RbDTO> r_list = mapResultListToDTO(list);
         session.getTransaction().commit();
@@ -161,17 +160,13 @@ public class ReimbursementsRepository {
      * @throws SQLException e
      */
     public List<RbDTO> getAllReimbSetByAuthorIdAndStatus(Integer authorId, ReimbursementStatus reStat) throws SQLException {
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.author_id=? AND er.reimbursement_status_id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1,authorId);
-            ps.setInt(2,reStat.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
-            reimbursements = mapResultSetDTO(rs);
-        }
-        return reimbursements;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where author_id = :authorId AND reimbursement_status_id = :restat";
+        Query<Reimbursement> query = session.createQuery(hql);
+        query.setParameter("authorId",authorId);
+        query.setParameter("restat",reStat.ordinal());
+        return mapResultListToDTO(query.list());
     }
 
     /**
@@ -182,31 +177,22 @@ public class ReimbursementsRepository {
      * @throws SQLException e
      */
     public List<RbDTO> getAllReimbSetByAuthorIdAndType(Integer authorId, ReimbursementType reType) throws SQLException {
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.author_id=? AND er.reimbursement_type_id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setInt(1,authorId);
-            ps.setInt(2,reType.ordinal() + 1);
-            ResultSet rs = ps.executeQuery();
-            reimbursements = mapResultSetDTO(rs);
-        }
-        return reimbursements;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where author_id = :authorId AND reimbursement_type_id = :retype";
+        Query<Reimbursement> query = session.createQuery(hql);
+        query.setParameter("authorId",authorId);
+        query.setParameter("retype",reType.ordinal());
+        return mapResultListToDTO(query.list());
     }
 
     public List<RbDTO> getAllReimbSetByType(Integer typeId)  {
-        List<RbDTO> reimbursements = new ArrayList<>();
-        try(Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + "WHERE er.reimbursement_type_id=? order by er.id";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1,typeId);
-            ResultSet rs = ps.executeQuery();
-            reimbursements = mapResultSetDTO(rs);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return reimbursements;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where reimbursement_type_id = :type";
+        Query<Reimbursement> query = session.createQuery(hql);
+        query.setParameter("type",typeId);
+        return mapResultListToDTO(query.list());
     }
 
     /**

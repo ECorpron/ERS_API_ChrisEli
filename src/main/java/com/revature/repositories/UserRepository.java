@@ -49,16 +49,11 @@ public class UserRepository {
     //---------------------------------- READ -------------------------------------------- //
 
     public List<User> getAllusers() {
-        List<User> users = new ArrayList<>();
-        try (Connection conn = ConnectionFactory.getInstance().getConnection()) {
-            String sql = baseQuery + " order by eu.id";
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            users = mapResultSet(rs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return users;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "From User";
+        Query<User> query = session.createQuery(hql);
+        return query.list();
     }
 
     /**
@@ -70,17 +65,12 @@ public class UserRepository {
     public Optional<User> getAUserByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
         String hql = "FROM User WHERE email = :email";
         Query<User> query = session.createQuery(hql);
         query.setParameter("email", email);
-        List<User> results = query.list();
-
         List<User> list = query.list();
-
         session.getTransaction().commit();
         session.close();
-
         if (list.size() == 0) {
             return Optional.empty();
         } else {
@@ -91,17 +81,12 @@ public class UserRepository {
     public Optional<User> getAUserByUsername(String userName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
-        String hql = "FROM User WHERE username = :name";
+        String hql = "FROM User where username = :userName";
         Query<User> query = session.createQuery(hql);
-        query.setParameter("name", userName);
-        List<User> results = query.list();
-
+        query.setParameter("userName",userName);
         List<User> list = query.list();
-
         session.getTransaction().commit();
         session.close();
-
         if (list.size() == 0) {
             return Optional.empty();
         } else {
@@ -120,18 +105,15 @@ public class UserRepository {
     public Optional<User> getAUserByUsernameAndPassword(String userName, String password) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
         try {
             String hql = "FROM User WHERE username = :name AND password = :pass";
             Query<User> query = session.createQuery(hql);
             query.setParameter("name",userName);
             query.setParameter("pass", password);
             List<User> results = query.list();
-
             session.getTransaction().commit();
             session.close();
             return Optional.of(results.get(0));
-
         } catch (Exception e){
             //session.getTransaction().rollback();
             session.close();
@@ -145,7 +127,6 @@ public class UserRepository {
     public boolean updateAUser(User newUser) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-
         try {
             //session.evict(newUser)?
             session.merge(newUser);
