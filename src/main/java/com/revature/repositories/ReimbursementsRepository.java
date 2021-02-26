@@ -249,12 +249,15 @@ public class ReimbursementsRepository {
     public boolean updateFIN(User user, Integer statusId, Integer reimbId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        session.getTransaction().commit();
         try {
-            Reimbursement reimbursement = getAReimbByReimbId(reimbId).get();
-            reimbursement.setReimbursementStatus(ReimbursementStatus.getByNumber(statusId));
-            reimbursement.setResolver(user);
-            session.update(reimbursement);
+            Optional<Reimbursement> reimbursement = getAReimbByReimbId(reimbId);
+            if (reimbursement.isPresent()) {
+                reimbursement.get().setReimbursementStatus(ReimbursementStatus.getByNumber(statusId));
+                reimbursement.get().setResolver(user);
+                session.update(reimbursement.get());
+            } else {
+                throw new RuntimeException();
+            }
             session.getTransaction().commit();
             session.close();
             return true;

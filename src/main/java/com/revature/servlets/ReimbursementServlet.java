@@ -139,7 +139,7 @@ public class ReimbursementServlet extends HttpServlet {
             return;
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(404);
+            resp.setStatus(406);
             return;
         }
     }

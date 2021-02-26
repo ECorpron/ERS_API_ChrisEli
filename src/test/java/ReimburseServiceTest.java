@@ -10,7 +10,8 @@ public class ReimburseServiceTest {
 
     public static void main(String[] args) {
         ReimbursementService reimbursementService = ReimbursementService.getInstance();
-        User employee = UserService.getInstance().getAUserById(15);
+        //User employee = UserService.getInstance().getAUserById(15);
+        User financialManager = UserService.getInstance().getAUserById(16);
 
         RbDTO store = new RbDTO();
         store.setId(4);
@@ -22,6 +23,8 @@ public class ReimburseServiceTest {
         //reimbursementService.saveRbDTO(employee, store);
         //System.out.println(reimbursementService.getReimbByUserAndReimbId(15, 8).toString());
         //System.out.println("Number of reimbursements for account 15: "+reimbursementService.getReimbByUserId(15).size());
-        reimbursementService.updateReimbursemntByRbDTO(store, employee);
+        //reimbursementService.updateReimbursemntByRbDTO(store, employee);
+        reimbursementService.deny(financialManager, 1);
+
     }
 }

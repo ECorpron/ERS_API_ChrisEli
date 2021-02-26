@@ -104,9 +104,9 @@ public class ReimbursementService {
             throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         List<RbDTO> reimb = reimbRepo.getAllReimbSetByType(typeId);
-        if (reimb.isEmpty()){
-            throw new NoReimbursementsException("sorry but could not find the requested reimbursement.");
-        }
+//        if (reimb.isEmpty()){
+//            throw new NoReimbursementsException("sorry but could not find the requested reimbursement.");
+//        }
         return reimb;
     }
 
