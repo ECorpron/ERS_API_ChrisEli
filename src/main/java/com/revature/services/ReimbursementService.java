@@ -17,19 +17,20 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service layer for validating reimbursements before sending to or from the Database
+ * Service layer for validating reimbursements before sending to or from the Database. Implements the Singleton model.
  */
 public class ReimbursementService {
     private final ReimbursementsRepository reimbRepo = new ReimbursementsRepository();
     private final static ReimbursementService reimbService = new ReimbursementService();
 
-
-
     private ReimbursementService() {
         super();
     }
 
-
+    /**
+     * A static way to access the Reimbursement service
+     * @return returns the Reimbursement service instance
+     */
     public static ReimbursementService getInstance() {
         return reimbService;
     }
@@ -61,13 +62,18 @@ public class ReimbursementService {
         return reimb;
     }
 
-    public RbDTO getReimbByReimbId(Integer userId){
-        if (userId <= 0){
+    /**
+     * Gets a RbDTO representation of the reimbursement that has the specified reimbursement id
+     * @param reimId the reimbursement Id being searched for
+     * @return returns an RbDTO representaion of the reimbursement. Returns null if it can't be found
+     */
+    public RbDTO getReimbByReimbId(Integer reimId){
+        if (reimId <= 0){
             throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         RbDTO reimb = null;
         try {
-            Optional<Reimbursement> temp = reimbRepo.getAReimbByReimbId(userId);
+            Optional<Reimbursement> temp = reimbRepo.getAReimbByReimbId(reimId);
             if (temp.isPresent()) {
                 reimb = reimbursementToRbDTO(temp.get());
             } else {
@@ -79,6 +85,12 @@ public class ReimbursementService {
         return reimb;
     }
 
+    /**
+     * Gets a RbDTO of a reimbursement by the reimburesement author Id and reimbursement id
+     * @param userId The author id to search for
+     * @param reimbId the reimbursement id to search for
+     * @return returns an RbDTO version of the reimbursement, or null if it can't be found
+     */
     public RbDTO getReimbByUserAndReimbId(int userId, int reimbId) {
         try {
             Optional<Reimbursement> temp = reimbRepo.getAReimbByReimbIdAndUserId(userId, reimbId);
@@ -104,9 +116,7 @@ public class ReimbursementService {
             throw new InvalidIdException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
         List<RbDTO> reimb = reimbRepo.getAllReimbSetByType(typeId);
-//        if (reimb.isEmpty()){
-//            throw new NoReimbursementsException("sorry but could not find the requested reimbursement.");
-//        }
+
         return reimb;
     }
 
@@ -139,6 +149,11 @@ public class ReimbursementService {
         }
     }
 
+    /**
+     * Takes in an author user, and a RbDTO, converts it to a reimbursement, and saves it.
+     * @param user The author of the reimbursement
+     * @param rbdto the RbDTO to be saved
+     */
     public void saveRbDTO(User user, RbDTO rbdto) {
         Reimbursement reimbursement = new Reimbursement();
         reimbursement.setAuthor(user);
@@ -164,6 +179,11 @@ public class ReimbursementService {
         System.out.println(reimb);
     }
 
+    /**
+     * Updates a reimbursement by a RbDTO and User
+     * @param reimb The RbDTO to use to update the reimbursement
+     * @param user the author who is updating the reimbursement
+     */
     public void updateReimbursemntByRbDTO(RbDTO reimb, User user) {
         try {
             Optional<Reimbursement> reimbursement = reimbRepo.getAReimbByReimbIdAndUserId(user.getUserId(), reimb.getId());
@@ -216,6 +236,11 @@ public class ReimbursementService {
         }
     }
 
+    /**
+     * A helper method that converts a reimbursement to a RbDTO
+     * @param reimb the reimbursement to convert
+     * @return returns an RbDTO representation
+     */
     private RbDTO reimbursementToRbDTO(Reimbursement reimb) {
         RbDTO rbDTO = new RbDTO();
 

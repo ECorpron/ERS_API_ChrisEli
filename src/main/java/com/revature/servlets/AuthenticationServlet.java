@@ -15,11 +15,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * The authentication servlet. Handles all log in functionality' and end point requests. Should only be sent a post
+ * request to try and log in.
+ */
 @WebServlet("/authenticate")
 public class AuthenticationServlet extends HttpServlet {
 
     public final UserService userService = UserService.getInstance();
 
+    /**
+     * A client sends a post request with a Credentials object to try and log in
+     * @param req The client request. Should containt a Credentials object
+     * @param resp The response to the client request
+     * @throws IOException Throws an IO Exception if there is an input/output problem
+     */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
         ObjectMapper mapper = new ObjectMapper();

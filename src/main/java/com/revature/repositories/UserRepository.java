@@ -6,11 +6,16 @@ import com.revature.util.PasswordHash;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.sql.*;
 import java.util.*;
 
+/**
+ * Handles all CRUD methods accessing the User table in the database. Uses Hibernate
+ */
 public class UserRepository {
 
+    /**
+     * Empty constructor
+     */
     public UserRepository(){
         super();
     }
@@ -21,7 +26,6 @@ public class UserRepository {
      * A method tho add a new user to the database, hashes passwords before inserting
      * @param newUser the user to be added
      * @return returns true if one and only one row was inserted
-     * @throws SQLException e
      */
     public boolean addUser(User newUser)  {
         newUser.setPassword(PasswordHash.getInstance().hashing(newUser.getPassword()));
@@ -45,6 +49,11 @@ public class UserRepository {
 
     //---------------------------------- READ -------------------------------------------- //
 
+    /**
+     * Returns a list of all Users
+     * @return returns a list of all Users
+     */
+    @SuppressWarnings("unchecked")
     public List<User> getAllusers() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -52,6 +61,13 @@ public class UserRepository {
         Query<User> query = session.createQuery(hql);
         return query.list();
     }
+
+    /**
+     * Gets a spcific user with a specified id
+     * @param id the id of the user being searched for
+     * @return returns an optional of the user. Contains null if the user is not found
+     */
+    @SuppressWarnings("unchecked")
     public Optional<User> getAUserByUserId(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -72,8 +88,8 @@ public class UserRepository {
      * A method to get a single User by email
      * @param email the email address to search the DB for
      * @return returns an Optional user
-     * @throws SQLException e
      */
+    @SuppressWarnings("unchecked")
     public Optional<User> getAUserByEmail(String email) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -90,6 +106,12 @@ public class UserRepository {
         }
     }
 
+    /**
+     * Gets a specific user by their username
+     * @param userName the username of the searched for user
+     * @return returns an optional of the user. Contains null if the user isn't found
+     */
+    @SuppressWarnings("unchecked")
     public Optional<User> getAUserByUsername(String userName) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -111,7 +133,6 @@ public class UserRepository {
      * @param userName the users username
      * @param password the users password
      * @return returns an optional user
-     * @throws SQLException e
      */
     @SuppressWarnings("unchecked")
     public Optional<User> getAUserByUsernameAndPassword(String userName, String password) {
@@ -138,6 +159,11 @@ public class UserRepository {
 
     //---------------------------------- UPDATE -------------------------------------------- //
 
+    /**
+     * Updates a user in the database with information from the inputted user
+     * @param newUser the user to update
+     * @return returns true if an entry was updated, else returns false
+     */
     public boolean updateAUser(User newUser) {
         newUser.setPassword(PasswordHash.getInstance().hashing(newUser.getPassword()));
 
@@ -164,7 +190,6 @@ public class UserRepository {
      * A method to delete a single User from the database
      * @param userId the ID of the record to be deleted
      * @return returns true if one and only one record is updated
-     * @throws SQLException
      */
     public boolean deleteAUserById(Integer userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();

@@ -16,6 +16,10 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet that handles users requests. The only people accessing the user tables will be admins. post request means
+ * creating a new user, a put request means updating a user, a delete request means deleting a user.
+ */
 @WebServlet("/users/*")
 public class UsersServlet extends HttpServlet {
 
@@ -23,9 +27,9 @@ public class UsersServlet extends HttpServlet {
 
     /**
      * Admin can create a new User account. It will be initiated as an Employee.
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req the client request
+     * @param resp the server response
+     * @throws IOException thrown when a problem is encountered with the input/output
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
@@ -59,9 +63,9 @@ public class UsersServlet extends HttpServlet {
 
     /**
      * Admin can update an account
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req the client request
+     * @param resp the server response
+     * @throws IOException thrown when a problem is encountered with the input/output
      */
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws  IOException {
@@ -94,9 +98,9 @@ public class UsersServlet extends HttpServlet {
 
     /**
      * Admin can delete an account
-     * @param req
-     * @param resp
-     * @throws IOException
+     * @param req the client request
+     * @param resp the server response
+     * @throws IOException thrown when a problem is encountered with the input/output
      */
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {

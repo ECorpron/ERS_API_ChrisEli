@@ -11,10 +11,18 @@ public class ApproveDeny {
     private Integer status;
     private Integer id;
 
+    /**
+     * Sets args to default values
+     */
     public ApproveDeny() {
         super();
     }
 
+    /**
+     * Sets status and id
+     * @param status the status to be set to
+     * @param id the id of the reimbursement being changed
+     */
     public ApproveDeny(Integer status, Integer id) {
         this.status = status;
         this.id = id;
