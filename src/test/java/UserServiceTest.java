@@ -7,13 +7,15 @@ public class UserServiceTest {
         UserService service = UserService.getInstance();
 
         User user = new User();
-        user.setEmail("here@test.com");
+        user.setEmail("updated");
         user.setFirstname("Me");
         user.setLastname("Mine");
-        user.setUsername("myself");
+        user.setUsername("updatedUsername3");
         user.setPassword("always");
         user.setUserRole(Role.EMPLOYEE.ordinal());
+        user.setUserId(9);
 
-        service.register(user);
+        //service.register(user);
+        service.update(user);
     }
 }
