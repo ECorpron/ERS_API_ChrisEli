@@ -7,6 +7,7 @@ import com.revature.models.ReimbursementType;
 import com.revature.models.User;
 import com.revature.repositories.ReimbursementsRepository;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,11 +51,45 @@ public class ReimbursementService {
         if (userId <= 0){
             throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
         }
-        List<RbDTO> reimb = reimbRepo.getAllReimbSetByAuthorId(userId);
+        List<RbDTO> reimb = null;
+        reimb = reimbRepo.getAllReimbSetByAuthorId(userId);
         if (reimb.isEmpty()){
             throw new RuntimeException();
         }
         return reimb;
+    }
+
+    public RbDTO getReimbByReimbId(Integer userId){
+        if (userId <= 0){
+            throw new RuntimeException("THE PROVIDED USER ID CANNOT BE LESS THAN OR EQUAL TO ZERO");
+        }
+        RbDTO reimb = null;
+        try {
+            Optional<Reimbursement> temp = reimbRepo.getAReimbByReimbId(userId);
+            if (temp.isPresent()) {
+                reimb = reimbursementToRbDTO(temp.get());
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return reimb;
+    }
+
+    public RbDTO getReimbByUserAndReimbId(int userId, int reimbId) {
+        try {
+            Optional<Reimbursement> temp = reimbRepo.getAReimbByReimbIdAndUserId(userId, reimbId);
+
+            if (temp.isPresent()) {
+                return reimbursementToRbDTO(temp.get());
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     /**
@@ -171,6 +206,23 @@ public class ReimbursementService {
         if(!reimbRepo.updateFIN(user, 3, reimbId)){
             throw new RuntimeException("Something went wrong trying to deny this reimbursement");
         }
+    }
+
+    private RbDTO reimbursementToRbDTO(Reimbursement reimb) {
+        RbDTO rbDTO = new RbDTO();
+
+        rbDTO.setStatus(reimb.getReimbursementStatus().name());
+        rbDTO.setId(reimb.getId());
+        rbDTO.setDescription(reimb.getDescription());
+        rbDTO.setAmount(reimb.getAmount());
+        rbDTO.setSubmitted(reimb.getSubmitted().toString());
+        rbDTO.setType(reimb.getReimbursementType().name());
+        rbDTO.setAuthorName(reimb.getAuthor().getFirstname()+" "+reimb.getAuthor().getLastname());
+        rbDTO.setImage(reimb.getReceipt());
+        rbDTO.setResolved(reimb.getResolved().toString());
+        rbDTO.setResolverName(reimb.getResolver().getFirstname()+" "+reimb.getResolver().getLastname());
+
+        return rbDTO;
     }
 
     /**

@@ -20,6 +20,7 @@ import java.util.Set;
 
 public class ReimbursementServlet extends HttpServlet {
 
+    //
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter writer = resp.getWriter();
@@ -28,6 +29,7 @@ public class ReimbursementServlet extends HttpServlet {
         User rqst = (session == null) ? null : (User) req.getSession(false).getAttribute("this-user");
         resp.setContentType("application/json");
         String userIdParam = req.getParameter("userId");
+
         if (rqst != null && rqst.getUserRole() == Role.FINANCE_MANAGER.ordinal()) {
             financeManageDoGet(req, resp, mapper, writer);
             return;
@@ -40,16 +42,36 @@ public class ReimbursementServlet extends HttpServlet {
     }
 
     private void employeeDoGet(HttpServletRequest req, HttpServletResponse resp, User rsqt, ObjectMapper mapper, PrintWriter writer) {
-        List<RbDTO> reimbursements = ReimbursementService.getInstance().getReimbByUserId(rsqt.getUserId());
-        try {
-            String usersJSON = mapper.writeValueAsString(reimbursements);
-            writer.write(usersJSON);
-            resp.setStatus(200);
-            return;
-        } catch (Exception e) {
-            e.printStackTrace();
-            resp.setStatus(404);
-            return;
+        String reimbursement = req.getParameter("reimburseAccount");
+
+        String id = req.getParameter("id");
+        Integer reimbursementId = Integer.getInteger(id);
+
+        if (reimbursementId == null) {
+            List<RbDTO> reimbursements = ReimbursementService.getInstance().getReimbByUserId(rsqt.getUserId());
+            try {
+                String usersJSON = mapper.writeValueAsString(reimbursements);
+                writer.write(usersJSON);
+                resp.setStatus(200);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp.setStatus(404);
+                return;
+            }
+        } else {
+            RbDTO reimb = ReimbursementService.getInstance().getReimbByUserAndReimbId(rsqt.getUserId(), reimbursementId);
+
+            try {
+                String usersJSON = mapper.writeValueAsString(reimb);
+                writer.write(usersJSON);
+                resp.setStatus(200);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp.setStatus(404);
+                return;
+            }
         }
     }
 
@@ -177,12 +199,35 @@ public class ReimbursementServlet extends HttpServlet {
         }
     }
 
-    private void financeManageDoGet(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper, PrintWriter writer) {
-        String reimbursement = req.getParameter("reimburseAccount");
-        if (reimbursement == null || !"".equals(reimbursement.trim())) {
-            getAllReimbursements(resp,mapper, writer);
+    private void getSpecificReimbursement(HttpServletResponse resp, ObjectMapper mapper, PrintWriter writer, Integer id) {
+        RbDTO reimbursements = ReimbursementService.getInstance().getReimbByReimbId(id);
+        try {
+            String usersJSON = mapper.writeValueAsString(reimbursements);
+            writer.write(usersJSON);
+            resp.setStatus(200);
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(404);
             return;
         }
+    }
+
+    private void financeManageDoGet(HttpServletRequest req, HttpServletResponse resp, ObjectMapper mapper, PrintWriter writer) {
+        String reimbursement = req.getParameter("reimburseAccount");
+
+        String id = req.getParameter("id");
+        Integer reimbursementId = Integer.getInteger(id);
+
+        if (reimbursement == null || "".equals(reimbursement.trim())) {
+            if (id == null) {
+                getAllReimbursements(resp, mapper, writer);
+            } else {
+                getSpecificReimbursement(resp, mapper, writer, reimbursementId);
+            }
+            return;
+        }
+
         String type = req.getParameter("type");
         if (type != null && !"".equals(type.trim())) {
             getReimbursementByTpe(resp, mapper, writer, type);

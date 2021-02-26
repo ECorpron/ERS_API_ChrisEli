@@ -120,6 +120,21 @@ public class ReimbursementsRepository {
         return Optional.of(list.get(0));
     }
 
+    public Optional<Reimbursement> getAReimbByReimbIdAndUserId(Integer reimbId, Integer userId) throws SQLException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM Reimbursement where id = :id AND author_id = :author";
+        Query query = session.createQuery(hql);
+
+        query.setParameter("id", reimbId);
+        query.setParameter("author", userId);
+
+        List<Reimbursement> list = query.list();
+        session.getTransaction().commit();
+        session.close();
+        return Optional.of(list.get(0));
+    }
+
     /**
      * A method to get all of the records for an author given their id
      * @param authorId the ID of the author of the reimbursement
