@@ -10,7 +10,10 @@ import java.nio.charset.StandardCharsets;
 
 public class servletTests {
     public static void main(String[] args) {
-        System.out.println(Role.EMPLOYEE.ordinal());
+        String id = "";
+        int test = Integer.parseInt(id);
+        System.out.println(test);
+
 //        ObjectMapper mapper = new ObjectMapper();
 //
 //        User user = new User();

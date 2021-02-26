@@ -43,11 +43,10 @@ public class ReimbursementServlet extends HttpServlet {
 
     private void employeeDoGet(HttpServletRequest req, HttpServletResponse resp, User rsqt, ObjectMapper mapper, PrintWriter writer) {
         String id = req.getParameter("id");
-        writer.write(id);
-        Integer reimbursementId = Integer.getInteger(id);
 
+        boolean skip = (id == null);
 
-        if (reimbursementId == null) {
+        if (skip) {
 
             List<RbDTO> reimbursements = ReimbursementService.getInstance().getReimbByUserId(rsqt.getUserId());
             try {
@@ -61,6 +60,14 @@ public class ReimbursementServlet extends HttpServlet {
                 return;
             }
         } else {
+            int reimbursementId;
+            try {
+                reimbursementId = Integer.parseInt(id);
+            } catch (NumberFormatException n){
+                resp.setStatus(401);
+                return;
+            }
+
             RbDTO reimb = ReimbursementService.getInstance().getReimbByUserAndReimbId(rsqt.getUserId(), reimbursementId);
 
             try {
