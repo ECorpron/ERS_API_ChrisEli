@@ -55,6 +55,21 @@ public class UserRepository {
         Query<User> query = session.createQuery(hql);
         return query.list();
     }
+    public Optional<User> getAUserByUserId(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        String hql = "FROM User WHERE id = :id";
+        Query<User> query = session.createQuery(hql);
+        query.setParameter("id", id);
+        List<User> list = query.list();
+        session.getTransaction().commit();
+        session.close();
+        if (list.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(list.get(0));
+        }
+    }
 
     /**
      * A method to get a single User by email
@@ -169,32 +184,5 @@ public class UserRepository {
         session.close();
         return true;
     }
-
-
-
-    //---------------------------------- UTIL -------------------------------------------- //
-
-    /**
-     * A method to map the result sets from the users queries
-     * @param rs a result set
-     * @return a set of users
-     * @throws SQLException e
-     */
-    private List<User> mapResultSet(ResultSet rs) throws SQLException {
-        List<User> users = new ArrayList<>();
-        while (rs.next()){
-            User temp = new User();
-            temp.setUserId(rs.getInt("id"));
-            temp.setUsername(rs.getString("username"));
-            temp.setPassword(rs.getString("password"));
-            temp.setEmail(rs.getString("email"));
-            temp.setFirstname(rs.getString("first_name"));
-            temp.setLastname(rs.getString("last_name"));
-            temp.setUserRole(rs.getInt("user_role_id"));
-            users.add(temp);
-        }
-        return users;
-    }
-
 
 }
