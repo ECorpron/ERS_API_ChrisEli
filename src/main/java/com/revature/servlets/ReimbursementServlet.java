@@ -68,7 +68,14 @@ public class ReimbursementServlet extends HttpServlet {
                 return;
             }
 
-            RbDTO reimb = ReimbursementService.getInstance().getReimbByUserAndReimbId(rsqt.getUserId(), reimbursementId);
+            RbDTO reimb;
+
+            try {
+                reimb = ReimbursementService.getInstance().getReimbByUserAndReimbId(rsqt.getUserId(), reimbursementId);
+            } catch (RuntimeException e) {
+                resp.setStatus(404);
+                return;
+            }
 
             try {
                 String usersJSON = mapper.writeValueAsString(reimb);

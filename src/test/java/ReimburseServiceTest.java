@@ -12,13 +12,15 @@ public class ReimburseServiceTest {
         ReimbursementService reimbursementService = ReimbursementService.getInstance();
         User employee = UserService.getInstance().getAUserById(15);
 
-        RbDTO store = new RbDTO();
-        store.setStatus("PENDING");
-        store.setAmount(10.00);
-        store.setDescription("testing this out");
-        store.setType("LODGING");
+//        RbDTO store = new RbDTO();
+//        store.setStatus("PENDING");
+//        store.setAmount(10.00);
+//        store.setDescription("testing this out");
+//        store.setType("LODGING");
 
-        reimbursementService.saveRbDTO(employee, store);
+        //reimbursementService.saveRbDTO(employee, store);
+
+        System.out.println(reimbursementService.getReimbByUserAndReimbId(15, 8).toString());
 
         //System.out.println("Number of reimbursements for account 15: "+reimbursementService.getReimbByUserId(15).size());
     }

@@ -216,8 +216,13 @@ public class ReimbursementService {
         rbDTO.setType(reimb.getReimbursementType().name());
         rbDTO.setAuthorName(reimb.getAuthor().getFirstname()+" "+reimb.getAuthor().getLastname());
         rbDTO.setImage(reimb.getReceipt());
-        rbDTO.setResolved(reimb.getResolved().toString());
-        rbDTO.setResolverName(reimb.getResolver().getFirstname()+" "+reimb.getResolver().getLastname());
+
+        if (reimb.getResolved() != null) {
+            rbDTO.setResolved(reimb.getResolved().toString());
+        }
+        if (reimb.getResolver() != null) {
+            rbDTO.setResolverName(reimb.getResolver().getFirstname() + " " + reimb.getResolver().getLastname());
+        }
 
         return rbDTO;
     }

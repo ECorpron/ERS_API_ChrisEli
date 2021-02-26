@@ -99,7 +99,7 @@ public class ReimbursementsRepository {
         return Optional.of(list.get(0));
     }
 
-    public Optional<Reimbursement> getAReimbByReimbIdAndUserId(Integer reimbId, Integer userId) throws SQLException {
+    public Optional<Reimbursement> getAReimbByReimbIdAndUserId(int userId, int reimbId) throws SQLException {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         String hql = "FROM Reimbursement where id = :id AND author_id = :author";
