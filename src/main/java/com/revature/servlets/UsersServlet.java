@@ -5,7 +5,10 @@ import com.revature.dtos.ErrorResponse;
 import com.revature.exceptions.*;
 import com.revature.models.Role;
 import com.revature.models.User;
+import com.revature.repositories.ReimbursementsRepository;
 import com.revature.services.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +27,7 @@ import java.io.PrintWriter;
 public class UsersServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
+    private static final Logger logger = LogManager.getLogger(UsersServlet.class);
 
     /**
      * Admin can create a new User account. It will be initiated as an Employee.
@@ -43,6 +47,7 @@ public class UsersServlet extends HttpServlet {
                 final int code = (rqst == null)? 401 : 403;
                 ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
                 resp.setStatus(code);
+                logger.info(err.toString());
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -52,10 +57,12 @@ public class UsersServlet extends HttpServlet {
         } catch (FieldNotUniqueException | InvalidCredentialsException fnu){
             ErrorResponse err = new ErrorResponse(409,fnu.getMessage());
             resp.setStatus(409);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         } catch(Exception e) {
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
             resp.setStatus(418);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
 
@@ -79,6 +86,7 @@ public class UsersServlet extends HttpServlet {
                 final int code = (rqst == null)? 401 : 403;
                 ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
                 resp.setStatus(code);
+                logger.info(err.toString());
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -88,10 +96,12 @@ public class UsersServlet extends HttpServlet {
         } catch (InvalidUserFieldsException | UpdateObjectException iufe){
             resp.setStatus(409);
             ErrorResponse err = new ErrorResponse(409,iufe.getMessage());
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         } catch(Exception e) {
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
             resp.setStatus(418);
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
@@ -114,6 +124,7 @@ public class UsersServlet extends HttpServlet {
                 final int code = (rqst == null)? 401 : 403;
                 ErrorResponse err = new ErrorResponse(code,"Not authorized to post.");
                 resp.setStatus(code);
+                logger.info(err.toString());
                 writer.write(mapper.writeValueAsString(err));
                 return;
             }
@@ -123,15 +134,18 @@ public class UsersServlet extends HttpServlet {
             } else {
                 ErrorResponse err = new ErrorResponse(404,"Not able to delete user");
                 resp.setStatus(404);
+                logger.info(err.toString());
                 writer.write(mapper.writeValueAsString(err));
             }
         } catch (InvalidIdException ie){
             resp.setStatus(409);
             ErrorResponse err = new ErrorResponse(409,ie.getMessage());
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         } catch(Exception e) {
             resp.setStatus(418);
             ErrorResponse err = new ErrorResponse(418,e.getMessage());
+            logger.info(err.toString());
             writer.write(mapper.writeValueAsString(err));
         }
     }
